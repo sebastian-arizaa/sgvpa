@@ -5,7 +5,8 @@ function App() {
 
   return (
     <>
-      <div>
+      <div className='bg-amber-950'>
+        <p>aaa</p>
       </div>
       <h1>Vite + React</h1>
       <div className="card">
