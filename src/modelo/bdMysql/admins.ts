@@ -1,10 +1,14 @@
+import { QueryResult } from "mysql2";
+import { pool } from "../../server/conexion/bdMysql";
+
 interface AdminsInterface {
-  conseguirTodosAdmins(): Promise<string>;
+  conseguirUno(id: string): Promise<QueryResult>
 }
 
 class Admins implements AdminsInterface {
-  async conseguirTodosAdmins() {
-    return "Hello! from admins model echeee!";
+  async conseguirUno(id: string) {
+    const [rows] = await pool.query("SELECT * FROM admins WHERE id = ?", [id])
+    return rows
   }
 }
 

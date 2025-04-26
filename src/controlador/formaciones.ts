@@ -2,13 +2,61 @@ import { Request, Response } from "express";
 import { formaciones } from "../modelo/bdMysql/formaciones";
 
 interface FormacionesControladorInterface {
-  conseguirTodasFormaciones(req: Request, res: Response): void; // Static method signature
+  conseguirTodos(req: Request, res: Response): void;
+  conseguirUno(req: Request, res: Response): void;
+  crear(req: Request, res: Response): void;
+  actualizar(req: Request, res: Response): void;
+  eliminar(req: Request, res: Response): void;
 }
 
 class FormacionesControlador implements FormacionesControladorInterface {
-  async conseguirTodasFormaciones(_req: Request, res: Response) {
-    const data = await formaciones.conseguirTodasFormaciones();
-    res.json({data});
+  async conseguirTodos(_req: Request, res: Response) {
+    try {
+      const resultado = await formaciones.conseguirTodos();
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async conseguirUno(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const resultado = await formaciones.conseguirUno(id);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async crear(req: Request, res: Response) {
+    try {
+      const resultado = await formaciones.crear(req.body);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async actualizar(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const resultado = await formaciones.actualizar(id, req.body);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async eliminar(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const resultado = await formaciones.eliminar(id);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
   }
 }
 

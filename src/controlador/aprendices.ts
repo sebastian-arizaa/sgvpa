@@ -1,56 +1,61 @@
 import { Request, Response } from "express";
-import { megaStorage } from "../storage/megajs";
-import { Readable } from "stream";
+import { aprendices } from "../modelo/bdMysql/aprendices";
 
 interface AprendicesControladorInterface {
-  conseguirTodosAprendices(req: Request, res: Response): void;
+  conseguirTodos(req: Request, res: Response): void;
+  conseguirUno(req: Request, res: Response): void;
+  crear(req: Request, res: Response): void;
+  actualizar(req: Request, res: Response): void;
+  eliminar(req: Request, res: Response): void;
 }
 
 class AprendicesControlador implements AprendicesControladorInterface {
-  async conseguirTodosAprendices(req: Request, res: Response) {
-    console.log("LLEGO AQUII")
-    console.log("data", req.file?.originalname)
-
-    if(req.file) {
-      // const response = await megaStorage.uploadFile(req.file)
-      // const response = await megaStorage.eliminarDirectorio("AAAAAAAA")
-      // const response = await megaStorage.crearArchivo("AAAAAAAA", req.file)
-      // const response = await megaStorage.eliminarArchivo("AAAAAAAA", req.file.originalname)
-      const response = await megaStorage.conseguirArchivo("AAAAAAAA", req.file.originalname)
-      
-      // const filee = response.download({})
-      // console.log("🚀 ~ AprendicesControlador ~ conseguirTodosAprendices ~ filee:", filee)
-
-      // const response = await megaStorage.conseguirDirectorio("AAAAAAAA")
-      // console.log("🚀 ~ AprendicesControlador ~ conseguirTodosAprendices ~ response:", response)
-
-      // const children = response.children
-      // console.log("🚀 ~ AprendicesControlador ~ conseguirTodosAprendices ~ children:", children)
-
-      // const promesas: Promise<Buffer | string>[] = []
-      // children?.forEach((archivo) => {
-      //   console.log("File nameeee ======> ", archivo.name)
-      //   // console.log("File link ======> ", archivo.name)
-      //   promesas.push(archivo.downloadBuffer({}))
-      //   // archivo.download()
-      //   promesas.push(archivo.link(false))
-      // })
-
-      // Promise.all(promesas).then((buffers) => {
-      //   console.log("🚀 ~ AprendicesControlador ~ conseguirTodosAprendices ~ buffers:", buffers)
-      // })
-
-      if(response) {
-        // res.send()
-
-        res.setHeader('Content-Disposition', `attachment; filename="${response.name}"`);
-        res.setHeader('Content-Type', 'application/octet-stream');
-        (response.download({}) as Readable).pipe(res)
-        
-        // res.json({ok: true})
-      }else {
-        res.send("Error al crear el directorio")
-      }
+  async conseguirTodos(_req: Request, res: Response) {
+    try {
+      const resultado = await aprendices.conseguirTodos();
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async conseguirUno(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const resultado = await aprendices.conseguirUno(id);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async crear(req: Request, res: Response) {
+    try {
+      const resultado = await aprendices.crear(req.body);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async actualizar(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const resultado = await aprendices.actualizar(id, req.body);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async eliminar(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const resultado = await aprendices.eliminar(id);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
     }
   }
 }

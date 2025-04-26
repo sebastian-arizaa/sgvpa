@@ -11,8 +11,8 @@ export const pool = createPool({
 })
 
 pool.getConnection().then((connection) => {
-  console.log("Connected to the database");
+  console.log("Connectedo a la base de datos");
   connection.release();
 }).catch((error) => {
-  console.error("Error connecting to the database: ", error);
+  console.error("Error al conectar a la base de datos: ", error);
 });

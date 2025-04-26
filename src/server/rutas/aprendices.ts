@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { aprendicesControlador } from "../../controlador/aprendices";
-import multer from "multer";
-
-const storage = multer.memoryStorage()
-const upload = multer({storage})
 
 export const aprendicesRouter = Router();
 
-aprendicesRouter.post("/todos", upload.single("file"), aprendicesControlador.conseguirTodosAprendices)
+aprendicesRouter.get("/todos", aprendicesControlador.conseguirTodos);
+aprendicesRouter.get("/uno/:id", aprendicesControlador.conseguirUno);
+aprendicesRouter.post("/crear", aprendicesControlador.crear);
+aprendicesRouter.put("/uno/:id", aprendicesControlador.actualizar);
+aprendicesRouter.delete("/uno/:id", aprendicesControlador.eliminar);
