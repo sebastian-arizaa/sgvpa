@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { aprendices } from "../modelo/bdMysql/aprendices";
+import { AprendizType } from "../types";
+import { compararHashContraseña } from "../utils";
 
 interface AprendicesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
@@ -58,6 +60,23 @@ class AprendicesControlador implements AprendicesControladorInterface {
       res.status(500).end()
     }
   }
+
+  async ingresar(req: Request, res: Response) {
+    const { id, contraseña } = req.body;
+    const respuesta = await aprendices.conseguirUno(id)
+    if((respuesta as Array<AprendizType>).length) {
+      const {hash_contraseña, salt} = (respuesta as Array<AprendizType>)[0]
+      const respuestaHashContraseña = await compararHashContraseña(contraseña, salt, hash_contraseña)
+      if(respuestaHashContraseña) {
+        res.send("Acceso Permitido!!");
+      }else {
+        res.status(401).send("Acceso no permitido, contraseña incorrecta");
+      }
+
+    }else {
+      res.status(404).send("Usario inexistente");
+    }
+  } 
 }
 
 export const aprendicesControlador = new AprendicesControlador();
