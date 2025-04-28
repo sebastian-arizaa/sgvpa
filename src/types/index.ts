@@ -50,3 +50,6 @@ export type AprendicesFormacionesType = {
   aprendiz_id: string,
   activa: boolean,
 }
+
+// export type AprendizFormacionType {}
+// export type AprendizInstructorFormacionType {}

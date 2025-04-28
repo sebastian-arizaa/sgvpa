@@ -5,6 +5,8 @@ import { AprendizType } from "../../types";
 interface AprendicesInterface {
   conseguirTodos(): Promise<QueryResult>;
   conseguirUno(id: string): Promise<QueryResult>;
+  conseguirTodosPorInstructor(id: string): Promise<QueryResult>
+  conseguirTodosPorFormacion(id: string): Promise<QueryResult>
   crear(data: AprendizType): Promise<QueryResult>;
   actualizar(id: string, data: AprendizType): Promise<QueryResult>;
   eliminar(id: string): Promise<QueryResult>;
@@ -20,6 +22,60 @@ class Aprendices implements AprendicesInterface {
     const [rows] = await pool.query('SELECT * FROM aprendices WHERE id = ?', [id]);
     return rows;
   }
+
+  async conseguirTodosPorInstructor(id: string) {
+    const [rows] = await pool.query(`SELECT
+      a.id,
+      a.nombre,
+      a.apellidos,
+      a.telefono,
+      a.email,
+      a.hash_contraseña,
+      a.salt,
+      ia.activa,
+      a.formacion_actual_id,
+      f.nombre AS nombre_formacion,
+      f.id AS formacion_id,
+      f.nombre_departamento,
+      f.nombre_municipio
+      FROM
+        aprendices a
+      JOIN
+        instructores_aprendices ia ON ia.aprendiz_id = a.id
+      JOIN
+          formaciones f ON f.id = a.formacion_actual_id
+      WHERE
+          ia.instructor_id = ?`, 
+    [id]);
+    return rows;
+  }
+
+  async conseguirTodosPorFormacion(id: string) {
+    const [rows] = await pool.query(`SELECT
+	    a.id,
+      a.nombre,
+      a.apellidos,
+      a.telefono,
+      a.email,
+      a.hash_contraseña,
+      a.salt,
+      af.activa,
+      a.formacion_actual_id,
+      f.nombre AS nombre_formacion,
+      f.id AS formacion_id,
+      f.nombre_departamento,
+      f.nombre_municipio
+      FROM 
+        aprendices a 
+      JOIN 
+        aprendices_formaciones af on af.aprendiz_id = a.id 
+      JOIN
+        formaciones f ON f.id = af.formacion_id
+      WHERE af.formacion_id = ?`, 
+    [id]);
+    return rows;
+  }
+  
 
   async crear(data: AprendizType) {
     const { id, nombre, apellidos, telefono, email, hash_contraseña, salt, formacion_actual_id, } = data;

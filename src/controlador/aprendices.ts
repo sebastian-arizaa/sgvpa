@@ -6,6 +6,8 @@ import { compararHashContraseña } from "../utils";
 interface AprendicesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
   conseguirUno(req: Request, res: Response): void;
+  conseguirTodosPorInstructor(req: Request, res: Response): void;
+  conseguirTodosPorFormacion(req: Request, res: Response): void;
   crear(req: Request, res: Response): void;
   actualizar(req: Request, res: Response): void;
   eliminar(req: Request, res: Response): void;
@@ -25,6 +27,26 @@ class AprendicesControlador implements AprendicesControladorInterface {
     try {
       const { id } = req.params;
       const resultado = await aprendices.conseguirUno(id);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async conseguirTodosPorInstructor(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const resultado = await aprendices.conseguirTodosPorInstructor(id);
+      res.json(resultado);
+    } catch (error) {
+      console.log("Error: ", error)
+      res.status(500).end()
+    }
+  }
+  async conseguirTodosPorFormacion(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const resultado = await aprendices.conseguirTodosPorFormacion(id);
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
