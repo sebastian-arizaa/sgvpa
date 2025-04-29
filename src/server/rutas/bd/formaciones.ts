@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { formacionesControlador } from "../../controlador/formaciones";
+import { formacionesControlador } from "../../../controlador/bd/formaciones";
 
 export const formacionesRouter = Router();
 

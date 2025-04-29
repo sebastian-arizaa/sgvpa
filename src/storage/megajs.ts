@@ -1,46 +1,71 @@
 import { MutableFile } from "megajs";
-import { mega } from "../../server/conexion/megajs";
+import { mega } from "../server/conexion/megajs";
 
 interface MegaStorageInterface {
   crearArchivo(nombreDirectorio: string, file: Express.Multer.File): Promise<boolean>;
   eliminarArchivo(nombreDirectorio: string, nombreArchivo: string): Promise<boolean>;
-  conseguirArchivo(nombreDirectorio: string, nombreArchivo: string): Promise<MutableFile>;
+  conseguirArchivo(nombreDirectorio: string, nombreArchivo: string): Promise<MutableFile | null>;
   crearDirectorio(nombreDirectorio: string): Promise<MutableFile>;
   eliminarDirectorio(nombreDirectorio: string): Promise<boolean>;
   conseguirDirectorio(nombreDirectorio: string): Promise<MutableFile>;
 }
 
 class MegaStorage implements MegaStorageInterface {
-  crearArchivo(nombreDirectorio: string, archivo: Express.Multer.File): Promise<boolean>  {
+  crearArchivo(nombreDirectorio: string, archivo: Express.Multer.File): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.conseguirDirectorio(nombreDirectorio).then(directorio => {
-        directorio.upload({ name: archivo.originalname }, archivo.buffer, (error, archivo) => {
-          if (error) {
-            console.error("Error al subir el archivo:", error);
-            reject(false);
-          }
-          console.log("archivo subido correctamente:", archivo.name);
-          resolve(true);
-        });
+      this.conseguirArchivo(nombreDirectorio, archivo.originalname).then(archivoExistente => {
+        if(!archivoExistente) {
+          this.subirArchivoNuevo(nombreDirectorio, archivo, resolve, reject);
+        }else {
+          archivoExistente.delete(true)
+            .then(() => {
+                console.log("archivo eliminado correctamente:");
+                this.subirArchivoNuevo(nombreDirectorio, archivo, resolve, reject);
+            })
+            .catch(error => {
+                console.error("Error al eliminar archivo: ", error);
+                reject(false);
+            });
+        }
       }).catch(error => {
+          console.error("Error al conseguir archivo:", error);
+          reject(false);
+      });
+    });
+  }
+
+  private subirArchivoNuevo(nombreDirectorio: string, archivo: Express.Multer.File, resolve: (value: boolean | PromiseLike<boolean>) => void, reject: (reason?: unknown) => void): void {
+    this.conseguirDirectorio(nombreDirectorio).then(directorio => {
+      directorio.upload({ name: archivo.originalname }, archivo.buffer, (error, archivoSubido) => {
+        if (error) {
+          console.error("Error al subir el archivo:", error);
+          resolve(false);
+        }
+        console.log("archivo subido correctamente:", archivoSubido.name);
+        resolve(true);
+      });
+    }).catch(error => {
         console.error("Error al conseguir directorio:", error);
         reject(false);
-      })
-    });
+    })
   }
 
   eliminarArchivo(nombreDirectorio: string, nombreArchivo: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.conseguirArchivo(nombreDirectorio, nombreArchivo).then(archivo => {
-        archivo.delete(true, (error)=> {
-          if(error) {
-            console.error("Error al eliminar archivo:", error);
-            reject(false);
-            return
-          }
-          console.log("archivo eliminado correctamente:", nombreArchivo);
-          resolve(true);
-        })
+        if(archivo) {
+          archivo.delete(true, (error)=> {
+            if(error) {
+              console.error("Error al eliminar archivo:", error);
+              reject(false);
+              return
+            }
+            console.log("archivo eliminado correctamente:", nombreArchivo);
+            resolve(true);
+          })
+        }else {
+          resolve(false)
+        }
       }).catch(error => {
         console.error("Error al conseguir archivo:", error);
         reject(false);
@@ -48,18 +73,19 @@ class MegaStorage implements MegaStorageInterface {
     })
   }
 
-  conseguirArchivo(nombreDirectorio: string, nombreArchivo: string): Promise<MutableFile> {
+  conseguirArchivo(nombreDirectorio: string, nombreArchivo: string): Promise<MutableFile | null> {
     return new Promise((resolve, reject) => {
       this.conseguirDirectorio(nombreDirectorio).then(directorio => {
         const archivo = directorio.find(nombreArchivo);
         if (!archivo) {
           console.error("Archivo no encontrado:", nombreArchivo);
-          reject(false);
+          resolve(null);
           return;
         }
         resolve(archivo);
+        return
       }).catch(error => {
-        console.error("Erorr al conseguir directorio:", error);
+        console.error("Erorr al conseguir archivo:", error);
         reject(false);
       })
     });

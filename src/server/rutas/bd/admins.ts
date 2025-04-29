@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminsControlador } from "../../controlador/admins";
+import { adminsControlador } from "../../../controlador/bd/admins";
 
 export const adminRouter = Router();
 

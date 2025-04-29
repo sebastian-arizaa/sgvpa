@@ -1,22 +1,20 @@
 import { Request, Response } from "express";
-import { aprendices } from "../modelo/bdMysql/aprendices";
-import { AprendizType } from "../types";
-import { compararHashContraseña } from "../utils";
+import { instructores } from "../../modelo/bdMysql/instructores";
+import { InstructorType } from "../../types";
+import { compararHashContraseña } from "../../utils";
 
-interface AprendicesControladorInterface {
+interface InstructoresControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
   conseguirUno(req: Request, res: Response): void;
-  conseguirTodosPorInstructor(req: Request, res: Response): void;
-  conseguirTodosPorFormacion(req: Request, res: Response): void;
   crear(req: Request, res: Response): void;
   actualizar(req: Request, res: Response): void;
   eliminar(req: Request, res: Response): void;
 }
 
-class AprendicesControlador implements AprendicesControladorInterface {
+class InstructoresControlador implements InstructoresControladorInterface {
   async conseguirTodos(_req: Request, res: Response) {
     try {
-      const resultado = await aprendices.conseguirTodos();
+      const resultado = await instructores.conseguirTodos();
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -26,27 +24,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
   async conseguirUno(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const resultado = await aprendices.conseguirUno(id);
-      res.json(resultado);
-    } catch (error) {
-      console.log("Error: ", error)
-      res.status(500).end()
-    }
-  }
-  async conseguirTodosPorInstructor(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
-      const resultado = await aprendices.conseguirTodosPorInstructor(id);
-      res.json(resultado);
-    } catch (error) {
-      console.log("Error: ", error)
-      res.status(500).end()
-    }
-  }
-  async conseguirTodosPorFormacion(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
-      const resultado = await aprendices.conseguirTodosPorFormacion(id);
+      const resultado = await instructores.conseguirUno(id);
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -55,7 +33,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
   }
   async crear(req: Request, res: Response) {
     try {
-      const resultado = await aprendices.crear(req.body);
+      const resultado = await instructores.crear(req.body);
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -65,7 +43,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
   async actualizar(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const resultado = await aprendices.actualizar(id, req.body);
+      const resultado = await instructores.actualizar(id, req.body);
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -75,7 +53,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
   async eliminar(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const resultado = await aprendices.eliminar(id);
+      const resultado = await instructores.eliminar(id);
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -85,9 +63,9 @@ class AprendicesControlador implements AprendicesControladorInterface {
 
   async ingresar(req: Request, res: Response) {
     const { id, contraseña } = req.body;
-    const respuesta = await aprendices.conseguirUno(id)
-    if((respuesta as Array<AprendizType>).length) {
-      const {hash_contraseña, salt} = (respuesta as Array<AprendizType>)[0]
+    const respuesta = await instructores.conseguirUno(id)
+    if((respuesta as Array<InstructorType>).length) {
+      const {hash_contraseña, salt} = (respuesta as Array<InstructorType>)[0]
       const respuestaHashContraseña = await compararHashContraseña(contraseña, salt, hash_contraseña)
       if(respuestaHashContraseña) {
         res.send("Acceso Permitido!!");
@@ -101,4 +79,4 @@ class AprendicesControlador implements AprendicesControladorInterface {
   } 
 }
 
-export const aprendicesControlador = new AprendicesControlador();
+export const instructoresControlador = new InstructoresControlador();

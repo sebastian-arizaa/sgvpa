@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { admins } from "../modelo/bdMysql/admins";
-import { AdminType } from "../types";
-import { compararHashContraseña } from "../utils";
+import { admins } from "../../modelo/bdMysql/admins";
+import { AdminType } from "../../types";
+import { compararHashContraseña } from "../../utils";
 
 interface adminsControladorInterface {
   ingresar(req: Request, res: Response): void;

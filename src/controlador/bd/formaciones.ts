@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { formaciones } from "../modelo/bdMysql/formaciones";
+import { formaciones } from "../../modelo/bdMysql/formaciones";
 
 interface FormacionesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;

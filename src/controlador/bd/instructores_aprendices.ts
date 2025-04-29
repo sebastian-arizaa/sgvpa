@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { aprendicesFormaciones } from "../modelo/bdMysql/aprendices_formaciones";
+import { instructoresAprendices } from "../../modelo/bdMysql/instructores_aprendices";
 
-interface AprendicesFormacionesControladorInterface {
+interface InstructoresAprendicesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
   conseguirUno(req: Request, res: Response): void;
   crear(req: Request, res: Response): void;
@@ -9,10 +9,10 @@ interface AprendicesFormacionesControladorInterface {
   eliminar(req: Request, res: Response): void;
 }
 
-class AprendicesFormacionesControlador implements AprendicesFormacionesControladorInterface {
+class InstructoresAprendicesControlador implements InstructoresAprendicesControladorInterface {
   async conseguirTodos(_req: Request, res: Response) {
     try {
-      const resultado = await aprendicesFormaciones.conseguirTodos();
+      const resultado = await instructoresAprendices.conseguirTodos();
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -22,7 +22,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
   async conseguirUno(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const resultado = await aprendicesFormaciones.conseguirUno(Number(id));
+      const resultado = await instructoresAprendices.conseguirUno(Number(id));
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -31,7 +31,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
   }
   async crear(req: Request, res: Response) {
     try {
-      const resultado = await aprendicesFormaciones.crear(req.body);
+      const resultado = await instructoresAprendices.crear(req.body);
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -41,7 +41,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
   async actualizar(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const resultado = await aprendicesFormaciones.actualizar(Number(id), req.body);
+      const resultado = await instructoresAprendices.actualizar(Number(id), req.body);
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -51,7 +51,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
   async eliminar(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const resultado = await aprendicesFormaciones.eliminar(Number(id));
+      const resultado = await instructoresAprendices.eliminar(Number(id));
       res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
@@ -60,4 +60,4 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
   }
 }
 
-export const aprendicesFormacionesControlador = new AprendicesFormacionesControlador();
+export const instructoresAprendicesControlador = new InstructoresAprendicesControlador();
