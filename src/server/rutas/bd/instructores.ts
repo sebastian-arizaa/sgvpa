@@ -8,4 +8,4 @@ instructoresRouter.get("/uno/:id", instructoresControlador.conseguirUno);
 instructoresRouter.post("/uno", instructoresControlador.crear);
 instructoresRouter.put("/uno/:id", instructoresControlador.actualizar);
 instructoresRouter.delete("/uno/:id", instructoresControlador.eliminar);
-instructoresRouter.get("/ingresar", instructoresControlador.ingresar);
+instructoresRouter.post("/ingresar", instructoresControlador.ingresar);

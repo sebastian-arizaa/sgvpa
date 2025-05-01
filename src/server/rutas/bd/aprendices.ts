@@ -10,4 +10,4 @@ aprendicesRouter.get("/todos-por-formacion/:id", aprendicesControlador.conseguir
 aprendicesRouter.post("/uno", aprendicesControlador.crear);
 aprendicesRouter.put("/uno/:id", aprendicesControlador.actualizar);
 aprendicesRouter.delete("/uno/:id", aprendicesControlador.eliminar);
-aprendicesRouter.get("/ingresar", aprendicesControlador.ingresar);
+aprendicesRouter.post("/ingresar", aprendicesControlador.ingresar);

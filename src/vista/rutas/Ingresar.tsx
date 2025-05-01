@@ -2,92 +2,116 @@ import { useForm } from "react-hook-form";
 import { Button } from "../componentes/base/Button";
 import { Input } from "../componentes/base/Input";
 import { Title } from "../componentes/base/Title";
-import { Subtitle } from "../componentes/base/Subtitle";
+import { appAxios } from "../../utils/axios";
+import { AxiosError } from "axios";
+import { JwtPayloadType } from "../../types";
+import { useContext, useEffect, useState } from "react";
+import { SessionContext } from "../context/SessionContext";
 
 export function Ingresar() {
+  const { setSesionValue } = useContext(SessionContext)
   const { register, handleSubmit, formState: { errors }, watch } = useForm()
+  const [userError, setUserError] = useState(false)
 
-  const onSubmit = handleSubmit((data) => {
-    console.log("Funciona")
-    console.log(data)
+  const onSubmit = handleSubmit(async (formData) => {
+    try {
+      const perfilRutaDB = formData.perfil.split("|")[0]
+      const { data } = await appAxios.post<JwtPayloadType>(`/server/${perfilRutaDB}/ingresar`, { id: formData.numeroIdentificacion, contraseña: formData.contraseña })
+      setSesionValue(data)
+    } catch (error) {
+      const axiosError: AxiosError = (error as AxiosError)
+      console.log(axiosError.response?.data)
+      setUserError(true)
+    }
   })
 
-
   const isChecked = (value: string) => {
-    console.log(watch())
-    if (!watch().perfil) if (value === "aprendiz") return true
+    if (!watch().perfil) if (value === "aprendices|aprendiz") return true
     if (value === watch().perfil) return true
     return false
   }
-  // console.log(errors)
+
+  useEffect(() => {
+    setUserError(false)
+  }, [watch().numeroIdentificacion, watch().contraseña])
 
   return (
-    <div>
-      <div className="w-1/2">
-        <Title variante="lineaAbajo" tamaño="grande">Ingresar mi rey</Title>
+    <div className="grow flex flex-col items-center justify-center gap-4 w-full px-[20%]">
+      <div className="w-full">
+        <Title variante="lineaAbajo" tamaño="grande">Ingresar</Title>
       </div>
-      <div className="w-1/2">
-        <Subtitle variante="lineaAbajo" tamaño="grande">Hello!</Subtitle>
-      </div>
-      <div className="flex gap-4 pl-12 w-[1000px]">
-        <Button variante="secundario">Anterior</Button>
-        <Button variante="secundario">Siguiente</Button>
-      </div>
-      <form onSubmit={onSubmit} className="w-1/2 mt-16 pl-4">
+      <form onSubmit={onSubmit} className="flex flex-col items-center gap-2 w-full max-w-[600px]">
+        <div className="w-full flex items-center gap-4">
+          <Input
+            className="hidden"
+            checked={isChecked("admins|admin")}
+            name="perfil"
+            type="radio"
+            value="admins|admin"
+            register={register}
+            id="radioAdmin"
+            label="Administrador"
+            labelClassName={`border-b-2 border-gray-300 pb-2 cursor-pointer hover:border-green-500 ${isChecked("admins|admin") ? " border-green-500" : ''}`}
+          />
+          <Input
+            className="hidden"
+            checked={isChecked("instructores|instructor")}
+            name="perfil"
+            type="radio"
+            value="instructores|instructor"
+            register={register}
+            id="radioInstructor"
+            label="Instructor"
+            labelClassName={`border-b-2 border-gray-300 pb-2 cursor-pointer hover:border-green-500 ${isChecked("instructores|instructor") ? " border-green-500" : ''}`}
+          />
+          <Input
+            className="hidden"
+            checked={isChecked("aprendices|aprendiz")}
+            name="perfil"
+            type="radio"
+            value="aprendices|aprendiz"
+            register={register}
+            id="radioAprendiz"
+            label="Aprendiz"
+            labelClassName={`border-b-2 border-gray-300 pb-2 cursor-pointer hover:border-green-500 ${isChecked("aprendices|aprendiz") ? " border-green-500" : ''}`}
+          />
+        </div>
         <Input
-          name="nombre"
+          name="numeroIdentificacion"
           register={register} rules={{
             validate: (value) => {
               const trimValue = value.trim()
-              if (!trimValue.length) return "Nombre requerido"
-              if (!/^[A-Za-z ]+$/.test(trimValue)) return "Ingresa un nombre valido";
-              if (trimValue.length < 3) return "Nombre debe tener almenos 3 caracteres";
-              if (trimValue.length > 20) return "Nombre no puede exceder los 20 caracteres";
+              if (!trimValue.length) return "Número identificación requerido"
+              if (!/^[0-9]+$/.test(trimValue)) return "Número identificación deben ser numeros";
+              if (trimValue.length < 3) return "Número identificación debe tener almenos 8 caracteres";
+              if (trimValue.length > 11) return "Número identificación no puede exceder los 11 caracteres";
               return true;
             }
           }}
           errors={errors}
+          label="Número identificación"
         />
-        <Button variante="primario">Presionar</Button>
-
-
-        <div className="flex items-center gap-4">
-          <Input
-            className="hidden"
-            checked={isChecked("admin")}
-            name="perfil"
-            type="radio"
-            value="admin"
-            register={register}
-            id="radioAdmin"
-            label="Administrador"
-            labelClassName={`border-b-2 border-gray-300 pb-2 cursor-pointer ${isChecked("admin") ? "border-b-2 border-green-500" : ''}`}
-          />
-          <Input
-            className="hidden"
-            checked={isChecked("instructor")}
-            name="perfil"
-            type="radio"
-            value="instructor"
-            register={register}
-            id="radioInstructor"
-            label="Instructor"
-            labelClassName={`border-b-2 border-gray-300 pb-2 cursor-pointer ${isChecked("instructor") ? "border-b-2 border-green-500" : ''}`}
-          />
-          <Input
-            className="hidden"
-            checked={isChecked("aprendiz")}
-            name="perfil"
-            type="radio"
-            value="aprendiz"
-            register={register}
-            id="radioAprendiz"
-            label="Aprendiz"
-            labelClassName={`border-b-2 border-gray-300 pb-2 cursor-pointer ${isChecked("aprendiz") ? "border-b-2 border-green-500" : ''}`}
-          />
-        </div>
+        <Input
+          name="contraseña"
+          register={register} rules={{
+            validate: (value) => {
+              const trimValue = value.trim()
+              if (!trimValue.length) return "Contraseña requerida"
+              if (trimValue.length < 3) return "Contraseña debe tener almenos 4 caracteres";
+              if (trimValue.length > 20) return "Contraseña no puede exceder los 20 caracteres";
+              return true;
+            }
+          }}
+          errors={errors}
+          label="Contraseña"
+        />
+        {userError && (
+          <div className="w-full">
+            <p className="text-red-500">Número de identificación o contraseña incorrectos</p>
+          </div>
+        )}
+        <Button variante="primario">Ingresar</Button>
       </form>
-
-    </div>
+    </div >
   )
 }

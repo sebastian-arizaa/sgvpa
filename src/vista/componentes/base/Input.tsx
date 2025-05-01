@@ -43,14 +43,14 @@ export function Input({
   // console.log("props.checked ==>", props.checked)
   return (
     <div className='w-full'>
-      {label && <label className={`block w-full ${labelClassName}`} htmlFor={props.id}>{label}</label>}
+      {label && <label className={`block w-full mb-2 ${labelClassName}`} htmlFor={props.id}>{label}</label>}
       <input
         id={props.id}
         className={estilosFinal}
         {...register(name, rules)}
         {...props}
       />
-      {errors && errors.nombre?.type === "validate" && <span className="w-full text-sm text-red-500">{(errors.nombre.message as string)}</span>}
+      {errors && errors[name]?.type === "validate" && <span className="w-full text-sm text-red-500">{(errors[name].message as string)}</span>}
     </div>
   );
 };

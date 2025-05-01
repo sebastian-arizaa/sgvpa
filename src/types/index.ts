@@ -32,9 +32,9 @@ export type AprendizType = InstructorType & {
 
 export type FormacionesType = {
   id: string,
-	nombre: string,
-	nombre_municipio: string,
-	nombre_departamento: string,
+  nombre: string,
+  nombre_municipio: string,
+  nombre_departamento: string,
 }
 
 export type InstructoresAprendicesType = {
@@ -51,5 +51,13 @@ export type AprendicesFormacionesType = {
   activa: boolean,
 }
 
+export type UserTypes = AdminType | InstructorType | AprendizType
+
 // export type AprendizFormacionType {}
 // export type AprendizInstructorFormacionType {}
+
+
+export type JwtPayloadType = {
+  userTipo: 'admin' | 'instructor' | 'aprendiz' | null | undefined,
+  userData: { id: string } | AprendizType | InstructorType | null | undefined
+}

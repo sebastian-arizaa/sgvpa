@@ -3,6 +3,8 @@ import 'dotenv/config'
 const BD_TYPE = process.env.DB_TYPE || "mysql";
 
 let dotenvConfig: {
+  NODE_ENV: string;
+  SECRET_WORD: string;
   PORT: number | string;
   DB_HOST: string;
   DB_NAME: string;
@@ -12,6 +14,8 @@ let dotenvConfig: {
   MEGAJS_EMAIL: string;
   MEGAJS_PASSWORD: string;
 } = {
+  NODE_ENV: process.env.NODE_ENV || "production",
+  SECRET_WORD: process.env.SECRET_WORD || "palabra_secreta",
   PORT: "",
   DB_HOST: "",
   DB_NAME: "",
@@ -22,7 +26,7 @@ let dotenvConfig: {
   MEGAJS_PASSWORD: process.env.MEGAJS_PASSWORD || "",
 };
 
-if(BD_TYPE == "mysql") {
+if (BD_TYPE == "mysql") {
   dotenvConfig = {
     ...dotenvConfig,
     PORT: process.env.PORT || 3000,
@@ -32,7 +36,7 @@ if(BD_TYPE == "mysql") {
     DB_PASSWORD: process.env.DB_PASSWORD || "123",
     DB_PORT: process.env.DB_PORT || 3306,
   }
-}else if(BD_TYPE == "postgres") {
+} else if (BD_TYPE == "postgres") {
   dotenvConfig = {
     ...dotenvConfig,
     PORT: process.env.PORT || 3000,
@@ -44,4 +48,4 @@ if(BD_TYPE == "mysql") {
   }
 }
 
-export {dotenvConfig}
+export { dotenvConfig }

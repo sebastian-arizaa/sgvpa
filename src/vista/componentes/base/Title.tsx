@@ -16,7 +16,7 @@ export function Title({
   className,
   ...props
 }: Props) {
-  let titleClassName = 'font-semibold text-center mt-2 ';
+  let titleClassName = 'font-semibold text-center my-2 ';
 
   switch (variante) {
     case 'primario':

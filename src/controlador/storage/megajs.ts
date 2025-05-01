@@ -11,13 +11,13 @@ interface MegaJsControladorInterface {
 }
 
 class MegaJsControlador implements MegaJsControladorInterface {
-   async conseguirUno(req: Request, res: Response) {
+  async conseguirUno(req: Request, res: Response) {
     try {
-      const { nombreDirectorio, nombreArchivo} = req.body
+      const { nombreDirectorio, nombreArchivo } = req.body
       const archvio = await megaStorage.conseguirArchivo(nombreDirectorio, nombreArchivo)
-      if(archvio) {
+      if (archvio) {
         (archvio.download({}) as Readable).pipe(res)
-      }else {
+      } else {
         res.status(404).send("Archivo no encontrado")
       }
     } catch (error) {
@@ -26,37 +26,36 @@ class MegaJsControlador implements MegaJsControladorInterface {
     }
   }
 
-   async conseguirTodosNombres(req: Request, res: Response) {
-      try {
+  async conseguirTodosNombres(req: Request, res: Response) {
+    try {
       const { nombreDirectorio } = req.params
       const directorio = await megaStorage.conseguirDirectorio(nombreDirectorio)
-      if(directorio) {
+      if (directorio) {
         const nombreArchivos: Nullable<string>[] = []
-        directorio.children?.forEach((archivo)=> {
+        directorio.children?.forEach((archivo) => {
           nombreArchivos.push(archivo.name)
         })
-        res.json({data: nombreArchivos})
-      }else {
+        res.json({ data: nombreArchivos })
+      } else {
         res.status(404).send("Directorio no encontrado")
       }
-      // res.json(resultado);
     } catch (error) {
       console.log("Error: ", error)
       res.status(500).end()
     }
   }
 
-   async crear(req: Request, res: Response) {
-      try {
+  async crear(req: Request, res: Response) {
+    try {
       const { nombreDirectorio } = req.params
-      if(req.file) {
+      if (req.file) {
         const respuesta = await megaStorage.crearArchivo(nombreDirectorio, req.file)
-        if(respuesta) {
+        if (respuesta) {
           res.send("Archivo guardado exitosamente!")
-        }else {
+        } else {
           res.status(500).send("Hubo un error")
         }
-      }else {
+      } else {
         res.status(400).send("bad request")
       }
     } catch (error) {
@@ -68,10 +67,10 @@ class MegaJsControlador implements MegaJsControladorInterface {
   async eliminar(req: Request, res: Response) {
     try {
       const { nombreDirectorio, nombreArchivo } = req.body
-      const respuesta = await megaStorage.eliminarArchivo( nombreDirectorio, nombreArchivo )
-      if(respuesta) {
+      const respuesta = await megaStorage.eliminarArchivo(nombreDirectorio, nombreArchivo)
+      if (respuesta) {
         res.send("Archivo eliminado exitosamente!")
-      }else {
+      } else {
         res.status(404).send("Archivo no encontrado")
       }
     } catch (error) {
