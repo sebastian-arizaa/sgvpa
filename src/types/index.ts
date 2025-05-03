@@ -1,8 +1,6 @@
 
 // Interface de tablas
 
-import { ResultSetHeader } from "mysql2"
-
 /* interface Usurio {
   id: string,
   nombre: string,
@@ -59,8 +57,11 @@ export type AprendicesFormacionesType = {
 
 export type UserTypes = AdminType | InstructorType | AprendizType
 
-// export type AprendizFormacionType {}
-// export type AprendizInstructorFormacionType {}
+export type InnerAprendizFormacionType = AprendizType & FormacionesType & {
+  activa: boolean
+}
+
+export type InnerAprendizInstructorFormacionType = InnerAprendizFormacionType
 
 
 export type JwtPayloadType = {

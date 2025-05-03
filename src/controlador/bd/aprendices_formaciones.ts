@@ -14,7 +14,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
     try {
       const resultado = await aprendicesFormaciones.conseguirTodos();
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -24,7 +24,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
       const { id } = req.params;
       const resultado = await aprendicesFormaciones.conseguirUno(Number(id));
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -33,7 +33,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
     try {
       const resultado = await aprendicesFormaciones.crear(req.body);
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -43,7 +43,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
       const { id } = req.params;
       const resultado = await aprendicesFormaciones.actualizar(Number(id), req.body);
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -53,7 +53,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
       const { id } = req.params;
       const resultado = await aprendicesFormaciones.eliminar(Number(id));
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }

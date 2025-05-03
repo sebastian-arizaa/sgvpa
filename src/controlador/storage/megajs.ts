@@ -20,7 +20,7 @@ class MegaJsControlador implements MegaJsControladorInterface {
       } else {
         res.status(404).send("Archivo no encontrado")
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -39,7 +39,7 @@ class MegaJsControlador implements MegaJsControladorInterface {
       } else {
         res.status(404).send("Directorio no encontrado")
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -58,7 +58,7 @@ class MegaJsControlador implements MegaJsControladorInterface {
       } else {
         res.status(400).send("bad request")
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -73,7 +73,7 @@ class MegaJsControlador implements MegaJsControladorInterface {
       } else {
         res.status(404).send("Archivo no encontrado")
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { formaciones } from "../../modelo/bdMysql/formaciones";
-import { FormacionesType } from "../../types";
 import { ErrorNoEncontrado } from "../../errores/mysql";
 
 interface FormacionesControladorInterface {
@@ -16,7 +15,7 @@ class FormacionesControlador implements FormacionesControladorInterface {
     try {
       const resultado = await formaciones.conseguirTodos();
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -36,7 +35,7 @@ class FormacionesControlador implements FormacionesControladorInterface {
     try {
       const resultado = await formaciones.crear(req.body);
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -46,7 +45,7 @@ class FormacionesControlador implements FormacionesControladorInterface {
       const { id } = req.params;
       const resultado = await formaciones.actualizar(id, req.body);
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -56,7 +55,7 @@ class FormacionesControlador implements FormacionesControladorInterface {
       const { id } = req.params;
       const resultado = await formaciones.eliminar(id);
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }

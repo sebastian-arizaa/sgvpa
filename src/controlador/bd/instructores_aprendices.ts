@@ -14,7 +14,7 @@ class InstructoresAprendicesControlador implements InstructoresAprendicesControl
     try {
       const resultado = await instructoresAprendices.conseguirTodos();
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -24,7 +24,7 @@ class InstructoresAprendicesControlador implements InstructoresAprendicesControl
       const { id } = req.params;
       const resultado = await instructoresAprendices.conseguirUno(Number(id));
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -33,7 +33,7 @@ class InstructoresAprendicesControlador implements InstructoresAprendicesControl
     try {
       const resultado = await instructoresAprendices.crear(req.body);
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -43,7 +43,7 @@ class InstructoresAprendicesControlador implements InstructoresAprendicesControl
       const { id } = req.params;
       const resultado = await instructoresAprendices.actualizar(Number(id), req.body);
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -53,7 +53,7 @@ class InstructoresAprendicesControlador implements InstructoresAprendicesControl
       const { id } = req.params;
       const resultado = await instructoresAprendices.eliminar(Number(id));
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }

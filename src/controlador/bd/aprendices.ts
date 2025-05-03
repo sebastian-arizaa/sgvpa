@@ -1,8 +1,6 @@
-import { ErrorRequestHandler, Request, Response } from "express";
+import { Request, Response } from "express";
 import { aprendices } from "../../modelo/bdMysql/aprendices";
-import { AprendizType } from "../../types";
 import { generaTokenAcceso } from "../../utils/jwt";
-import { QueryError } from "mysql2";
 import { ErrorBaseDatos, ErrorConflicto, ErrorViolacionLlaveForanea } from "../../errores/mysql";
 
 interface AprendicesControladorInterface {
@@ -20,7 +18,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
     try {
       const respuesta = await aprendices.conseguirTodos();
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -29,13 +27,8 @@ class AprendicesControlador implements AprendicesControladorInterface {
     try {
       const { id } = req.params;
       const respuesta = await aprendices.conseguirUno(id);
-      if ((respuesta as Array<AprendizType>).length) {
-        res.json(respuesta)
-      } else {
-        res.status(404).send("Usuario no encontrado");
-      }
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -45,7 +38,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
       const { id } = req.params;
       const respuesta = await aprendices.conseguirTodosPorInstructor(id);
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -55,7 +48,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
       const { id } = req.params;
       const respuesta = await aprendices.conseguirTodosPorFormacion(id);
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -76,7 +69,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
       const { id } = req.params;
       const respuesta = await aprendices.actualizar(id, req.body);
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -86,18 +79,19 @@ class AprendicesControlador implements AprendicesControladorInterface {
       const { id } = req.params;
       const respuesta = await aprendices.eliminar(id);
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
   }
   async ingresar(req: Request, res: Response) {
-    const { id, contraseña } = req.body;
-    const respuesta = await (aprendices.conseguirUno(id) as Promise<AprendizType[]>)
-    if (respuesta.length) {
-      generaTokenAcceso(res, { userTipo: "aprendiz", userData: respuesta[0] }, respuesta, contraseña)
-    } else {
-      res.status(404).send("Usario inexistente");
+    try {
+      const { id, contraseña } = req.body;
+      const respuesta = await aprendices.conseguirUno(id);
+      generaTokenAcceso(res, { userTipo: "aprendiz", userData: respuesta }, respuesta, contraseña)
+    } catch (error: any) {
+      console.log("Error: ", error)
+      res.status(500).end()
     }
   }
 }

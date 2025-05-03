@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { instructores } from "../../modelo/bdMysql/instructores";
-import { InstructorType } from "../../types";
 import { generaTokenAcceso } from "../../utils/jwt";
 
 interface InstructoresControladorInterface {
@@ -16,7 +15,7 @@ class InstructoresControlador implements InstructoresControladorInterface {
     try {
       const respuesta = await instructores.conseguirTodos();
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -25,12 +24,8 @@ class InstructoresControlador implements InstructoresControladorInterface {
     try {
       const { id } = req.params;
       const respuesta = await instructores.conseguirUno(id);
-      if ((respuesta as Array<InstructorType>).length) {
-        res.json(respuesta)
-      } else {
-        res.status(404).send("Usuario no encontrado");
-      }
-    } catch (error) {
+      res.json(respuesta)
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -39,7 +34,7 @@ class InstructoresControlador implements InstructoresControladorInterface {
     try {
       const respuesta = await instructores.crear(req.body);
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -49,7 +44,7 @@ class InstructoresControlador implements InstructoresControladorInterface {
       const { id } = req.params;
       const respuesta = await instructores.actualizar(id, req.body);
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
@@ -59,18 +54,19 @@ class InstructoresControlador implements InstructoresControladorInterface {
       const { id } = req.params;
       const respuesta = await instructores.eliminar(id);
       res.json(respuesta);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
       res.status(500).end()
     }
   }
   async ingresar(req: Request, res: Response) {
-    const { id, contraseña } = req.body;
-    const respuesta = await (instructores.conseguirUno(id) as Promise<InstructorType[]>)
-    if (respuesta.length) {
-      generaTokenAcceso(res, { userTipo: "instructor", userData: respuesta[0] }, respuesta, contraseña)
-    } else {
-      res.status(404).send("Usario inexistente");
+    try {
+      const { id, contraseña } = req.body;
+      const respuesta = await instructores.conseguirUno(id);
+      generaTokenAcceso(res, { userTipo: "instructor", userData: respuesta }, respuesta, contraseña)
+    } catch (error: any) {
+      console.log("Error: ", error)
+      res.status(500).end()
     }
   }
 }

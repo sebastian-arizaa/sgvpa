@@ -4,8 +4,8 @@ import { JwtPayloadType, UserTypes } from "../types";
 import { Response } from "express";
 import { compararHashContraseña } from ".";
 
-export const generaTokenAcceso = async (res: Response, payload: JwtPayloadType, respuesta: UserTypes[], contraseña: string) => {
-  const { hash_contraseña, salt } = respuesta[0]
+export const generaTokenAcceso = async (res: Response, payload: JwtPayloadType, respuesta: UserTypes, contraseña: string) => {
+  const { hash_contraseña, salt } = respuesta
   const respuestaHashContraseña = await compararHashContraseña(contraseña, salt, hash_contraseña)
   if (respuestaHashContraseña) {
     const token = jwt.sign(payload, dotenvConfig.SECRET_WORD, { expiresIn: "1h", })

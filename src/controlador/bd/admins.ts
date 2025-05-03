@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { admins } from "../../modelo/bdMysql/admins";
-import { AdminType } from "../../types";
 import { generaTokenAcceso } from "../../utils/jwt";
 
 interface adminsControladorInterface {
@@ -13,22 +12,20 @@ class AdminsControlador implements adminsControladorInterface {
     try {
       const { id } = req.params;
       const respuesta = await admins.conseguirUno(id)
-      if ((respuesta as Array<AdminType>).length) {
-        res.json(respuesta)
-      } else {
-        res.status(404).send("Usuario no encontrado");
-      }
-    } catch (error) {
+      res.json(respuesta)
+    } catch (error: any) {
+      console.log("Error: ", error)
       res.status(500).end()
     }
   }
   async ingresar(req: Request, res: Response) {
-    const { id, contraseña } = req.body;
-    const respuesta = await (admins.conseguirUno(id) as Promise<AdminType[]>)
-    if (respuesta.length) {
-      generaTokenAcceso(res, { userTipo: "admin", userData: { id: respuesta[0].id } }, respuesta, contraseña)
-    } else {
-      res.status(404).send("Usario inexistente");
+    try {
+      const { id, contraseña } = req.body;
+      const respuesta = await admins.conseguirUno(id);
+      generaTokenAcceso(res, { userTipo: "admin", userData: respuesta }, respuesta, contraseña)
+    } catch (error: any) {
+      console.log("Error: ", error)
+      res.status(500).end()
     }
   }
 }
