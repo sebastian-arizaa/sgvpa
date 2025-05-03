@@ -1,7 +1,9 @@
-import { Request, Response } from "express";
+import { ErrorRequestHandler, Request, Response } from "express";
 import { aprendices } from "../../modelo/bdMysql/aprendices";
 import { AprendizType } from "../../types";
-import { generaTokenAcceso } from "../../utils";
+import { generaTokenAcceso } from "../../utils/jwt";
+import { QueryError } from "mysql2";
+import { ErrorBaseDatos, ErrorConflicto, ErrorViolacionLlaveForanea } from "../../errores/mysql";
 
 interface AprendicesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
@@ -62,9 +64,11 @@ class AprendicesControlador implements AprendicesControladorInterface {
     try {
       const respuesta = await aprendices.crear(req.body);
       res.json(respuesta);
-    } catch (error) {
-      console.log("Error: ", error)
-      res.status(500).end()
+    } catch (error: any) {
+      console.log("Error: ", error.mensaje)
+      if (error instanceof ErrorConflicto) res.status(409).send(error.mensaje)
+      if (error instanceof ErrorBaseDatos) res.status(500).send(error.mensaje)
+      if (error instanceof ErrorViolacionLlaveForanea) res.status(404).send(error.mensaje)
     }
   }
   async actualizar(req: Request, res: Response) {

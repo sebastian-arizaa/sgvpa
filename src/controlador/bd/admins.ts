@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { admins } from "../../modelo/bdMysql/admins";
 import { AdminType } from "../../types";
-import { generaTokenAcceso } from "../../utils";
+import { generaTokenAcceso } from "../../utils/jwt";
 
 interface adminsControladorInterface {
   conseguirUno(req: Request, res: Response): void;

@@ -1,10 +1,11 @@
-import { QueryResult } from "mysql2";
+import { FieldPacket, QueryResult } from "mysql2";
 import { pool } from "../../server/conexion/bdMysql";
 import { FormacionesType } from "../../types";
+import { ErrorNoEncontrado } from "../../errores/mysql";
 
 interface FormacionesInterface {
-  conseguirTodos(): Promise<QueryResult>;
-  conseguirUno(id: string): Promise<QueryResult>;
+  conseguirTodos(): Promise<FormacionesType[]>;
+  conseguirUno(id: string): Promise<FormacionesType[]>;
   crear(data: FormacionesType): Promise<QueryResult>;
   actualizar(id: string, data: FormacionesType): Promise<QueryResult>;
   eliminar(id: string): Promise<QueryResult>;
@@ -12,13 +13,17 @@ interface FormacionesInterface {
 
 class Formaciones implements FormacionesInterface {
   async conseguirTodos() {
-    const [rows] = await pool.query('SELECT * FROM formaciones');
+    const [rows] = await (pool.query('SELECT * FROM formaciones') as Promise<[FormacionesType[], FieldPacket[]]>);
     return rows;
   }
 
   async conseguirUno(id: string) {
-    const [rows] = await pool.query('SELECT * FROM formaciones WHERE id = ?', [id]);
-    return rows;
+    const [rows] = await (pool.query('SELECT * FROM formaciones WHERE id = ?', [id]) as Promise<[FormacionesType[], FieldPacket[]]>);
+    if (rows.length) {
+      return rows;
+    } else {
+      throw new ErrorNoEncontrado("No hay existe esa formación con ese número de identificación")
+    }
   }
 
   async crear(data: FormacionesType) {

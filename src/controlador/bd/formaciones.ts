@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { formaciones } from "../../modelo/bdMysql/formaciones";
+import { FormacionesType } from "../../types";
+import { ErrorNoEncontrado } from "../../errores/mysql";
 
 interface FormacionesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
@@ -24,8 +26,9 @@ class FormacionesControlador implements FormacionesControladorInterface {
       const { id } = req.params;
       const resultado = await formaciones.conseguirUno(id);
       res.json(resultado);
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error: ", error)
+      if (error instanceof ErrorNoEncontrado) return res.status(404).send(error.mensaje)
       res.status(500).end()
     }
   }

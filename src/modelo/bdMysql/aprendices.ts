@@ -1,6 +1,7 @@
 import { QueryResult } from "mysql2";
 import { pool } from "../../server/conexion/bdMysql";
 import { AprendizType } from "../../types";
+import { ErrorBaseDatos, ErrorConflicto, ErrorValidacion, ErrorViolacionLlaveForanea } from "../../errores/mysql";
 
 interface AprendicesInterface {
   conseguirTodos(): Promise<QueryResult>;
@@ -45,8 +46,8 @@ class Aprendices implements AprendicesInterface {
       JOIN
           formaciones f ON f.id = a.formacion_actual_id
       WHERE
-          ia.instructor_id = ?`, 
-    [id]);
+          ia.instructor_id = ?`,
+      [id]);
     return rows;
   }
 
@@ -71,19 +72,32 @@ class Aprendices implements AprendicesInterface {
         aprendices_formaciones af on af.aprendiz_id = a.id 
       JOIN
         formaciones f ON f.id = af.formacion_id
-      WHERE af.formacion_id = ?`, 
-    [id]);
+      WHERE af.formacion_id = ?`,
+      [id]);
     return rows;
   }
-  
+
 
   async crear(data: AprendizType) {
-    const { id, nombre, apellidos, telefono, email, hash_contraseña, salt, formacion_actual_id, } = data;
-    const [result] = await pool.query(
-      'INSERT INTO aprendices (id, nombre, apellidos, telefono, email, hash_contraseña, salt, formacion_actual_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [id, nombre, apellidos, telefono, email, hash_contraseña, salt, formacion_actual_id]
-    );
-    return result;
+    try {
+      const { id, nombre, apellidos, telefono, email, hash_contraseña, salt, formacion_actual_id, } = data;
+      const [result] = await pool.query(
+        'INSERT INTO aprendices (id, nombre, apellidos, telefono, email, hash_contraseña, salt, formacion_actual_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [id, nombre, apellidos, telefono, email, hash_contraseña, salt, formacion_actual_id]
+      );
+      return result;
+    } catch (error: any) {
+      console.log(error)
+      if (error.code === 'ER_DUP_ENTRY') {
+        if (error.sqlMessage.includes("email")) throw new ErrorConflicto('Ya existe un aprendiz con ese correo electrónico.');
+        if (error.sqlMessage.includes("PRIMARY")) throw new ErrorConflicto('Ya existe un aprendiz con ese número identificación.');
+      } else if (error.code.includes("ER_NO_REFERENCED_ROW")) {
+        if (error.sqlMessage.includes("formaciones")) throw new ErrorViolacionLlaveForanea('No existe una formacion con ese numero identificación.');
+      } else {
+        throw new ErrorBaseDatos("Error al crear el aprendiz en la base de datos.")
+      }
+      throw error
+    }
   }
 
   async actualizar(id: string, data: AprendizType) {

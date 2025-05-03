@@ -159,7 +159,7 @@ export function PerfilInstructor() {
         )}
         <div className="w-full flex gap-4">
           <Input
-            defaultValue={instructor.telefono}
+            defaultValue={instructor.telefono || ''}
             disabled={!editando}
             name="telefono"
             requerido={editando ? false : null}
@@ -176,7 +176,7 @@ export function PerfilInstructor() {
             label="Telefono"
           />
           <Input
-            defaultValue={instructor.email}
+            defaultValue={instructor.email || ''}
             disabled={!editando}
             name="email"
             requerido={editando ? false : null}

@@ -1,6 +1,8 @@
 
 // Interface de tablas
 
+import { ResultSetHeader } from "mysql2"
+
 /* interface Usurio {
   id: string,
   nombre: string,
@@ -9,6 +11,10 @@
   email: string,
   contraseña: string
 } */
+
+// export interface MysqlQueryRespuesta extends ResultSetHeader {
+//   data: AdminType[] | InstructorType[] | AprendizType[] | FormacionesType[]
+// }
 
 export type AdminType = {
   id: string,
@@ -20,8 +26,8 @@ export type InstructorType = {
   id: string,
   nombre: string,
   apellidos: string,
-  telefono: string,
-  email: string,
+  telefono: string | null,
+  email: string | null,
   hash_contraseña: string,
   salt: string
 }

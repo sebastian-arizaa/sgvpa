@@ -188,7 +188,7 @@ export function PerfilAprendiz() {
         )}
         <div className="w-full flex gap-4">
           <Input
-            defaultValue={aprendiz.telefono}
+            defaultValue={aprendiz.telefono || ''}
             disabled={!editando}
             name="telefono"
             requerido={editando ? false : null}
@@ -205,7 +205,7 @@ export function PerfilAprendiz() {
             label="Telefono"
           />
           <Input
-            defaultValue={aprendiz.email}
+            defaultValue={aprendiz.email || ''}
             disabled={!editando}
             name="email"
             requerido={editando ? false : null}

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { instructores } from "../../modelo/bdMysql/instructores";
 import { InstructorType } from "../../types";
-import { generaTokenAcceso } from "../../utils";
+import { generaTokenAcceso } from "../../utils/jwt";
 
 interface InstructoresControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
