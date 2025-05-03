@@ -1,10 +1,11 @@
 import { SelectHTMLAttributes } from "react";
-import { RegisterOptions, UseFormRegister } from "react-hook-form";
+import { FieldErrors, RegisterOptions, UseFormRegister } from "react-hook-form";
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   name: string;
   register: UseFormRegister<any>;
   rules?: RegisterOptions;
+  errors?: FieldErrors;
   values: string[],
   label?: string,
   labelClassName?: string,
@@ -14,6 +15,7 @@ interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
 export function Select({
   register,
   rules,
+  errors,
   name,
   values,
   label,
@@ -40,6 +42,7 @@ export function Select({
       <select className={estilosFinales} {...register(name, rules)} {...props}>
         {values.map(value => <option key={value} value={value}>{value}</option>)}
       </select>
+      {errors && errors[name]?.type === "validate" && <span className="w-full text-sm text-red-500">{(errors[name].message as string)}</span>}
     </div>
   )
 }

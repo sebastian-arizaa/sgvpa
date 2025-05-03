@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { instructores } from "../../modelo/bdMysql/instructores";
 import { generaTokenAcceso } from "../../utils/jwt";
+import { ErrorBaseDatos, ErrorConflicto } from "../../errores/mysql";
 
 interface InstructoresControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
@@ -36,7 +37,8 @@ class InstructoresControlador implements InstructoresControladorInterface {
       res.json(respuesta);
     } catch (error: any) {
       console.log("Error: ", error)
-      res.status(500).end()
+      if (error instanceof ErrorConflicto) res.status(409).send(error.mensaje)
+      if (error instanceof ErrorBaseDatos) res.status(500).send(error.mensaje)
     }
   }
   async actualizar(req: Request, res: Response) {

@@ -34,7 +34,7 @@ export type AprendizType = InstructorType & {
   formacion_actual_id: string
 }
 
-export type FormacionesType = {
+export type FormacionType = {
   id: string,
   nombre: string,
   nombre_municipio: string,
@@ -57,7 +57,7 @@ export type AprendicesFormacionesType = {
 
 export type UserTypes = AdminType | InstructorType | AprendizType
 
-export type InnerAprendizFormacionType = AprendizType & FormacionesType & {
+export type InnerAprendizFormacionType = AprendizType & FormacionType & {
   activa: boolean
 }
 

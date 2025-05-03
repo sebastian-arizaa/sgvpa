@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { formaciones } from "../../modelo/bdMysql/formaciones";
-import { ErrorNoEncontrado } from "../../errores/mysql";
+import { ErrorConflicto, ErrorNoEncontrado } from "../../errores/mysql";
 
 interface FormacionesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
@@ -27,7 +27,9 @@ class FormacionesControlador implements FormacionesControladorInterface {
       res.json(resultado);
     } catch (error: any) {
       console.log("Error: ", error)
-      if (error instanceof ErrorNoEncontrado) return res.status(404).send(error.mensaje)
+      if (error instanceof ErrorNoEncontrado) {
+        res.status(404).send(error.mensaje)
+      }
       res.status(500).end()
     }
   }
@@ -37,7 +39,7 @@ class FormacionesControlador implements FormacionesControladorInterface {
       res.json(resultado);
     } catch (error: any) {
       console.log("Error: ", error)
-      res.status(500).end()
+      if (error instanceof ErrorConflicto) res.status(409).send(error.mensaje)
     }
   }
   async actualizar(req: Request, res: Response) {

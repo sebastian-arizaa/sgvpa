@@ -3,14 +3,14 @@ import { Input } from "../componentes/base/Input";
 import { Title } from "../componentes/base/Title";
 import { Button } from "../componentes/base/Button";
 import { appAxios } from "../../utils/axios";
-import { AprendizType, FormacionesType } from "../../types";
+import { AprendizType, FormacionType } from "../../types";
 import { generarSalt, hashContraseña } from "../../utils";
 import { useEffect, useState } from "react";
 
 export function CrearAprendiz() {
   // const [cargando, setCargando] = useState(true)
   const [mensajeErrorBD, setMensajeErrorBD] = useState<string | null>("")
-  const [formacionEncontrada, setFormacionEncontrada] = useState<FormacionesType | null | undefined>(undefined)
+  const [formacionEncontrada, setFormacionEncontrada] = useState<FormacionType | null | undefined>(undefined)
   const { register, handleSubmit, formState: { errors }, watch, reset } = useForm()
 
   const onSubmit = handleSubmit(async (formData) => {
@@ -29,11 +29,19 @@ export function CrearAprendiz() {
         formacion_actual_id: formData.numeroFichaActual,
         hash_contraseña: hash_contraseña,
         salt: salt,
-        telefono: formData.telefono || ''
+        telefono: formData.telefono || null
       }
       const respuesta = await appAxios.post("/server/aprendices/uno", aprendiz)
       console.log("🚀 ~ onSubmit ~ respuesta:", respuesta)
-      reset()
+      reset({
+        nombre: "",
+        apellidos: "",
+        email: "",
+        telefono: "",
+        contraseña: "",
+        numeroIdentificacion: "",
+        numeroFichaActual: "",
+      })
     } catch (error: any) {
       console.log(error)
       setMensajeErrorBD(error.response.data)
@@ -157,7 +165,7 @@ export function CrearAprendiz() {
               try {
                 console.log("Buscar=", watch().numeroFichaActual)
                 const { data } = await appAxios.get(`/server/formaciones/uno/${numeroFichaActual}`)
-                setFormacionEncontrada(data[0])
+                setFormacionEncontrada(data)
                 console.log("🚀 ~ CrearAprendiz ~ data:", data)
               } catch (error: any) {
                 setFormacionEncontrada(null)

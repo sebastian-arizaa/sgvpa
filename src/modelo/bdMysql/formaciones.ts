@@ -1,20 +1,20 @@
 import { FieldPacket, QueryResult } from "mysql2";
 import { pool } from "../../server/conexion/bdMysql";
-import { FormacionesType } from "../../types";
-import { ErrorBaseDatos, ErrorNoEncontrado } from "../../errores/mysql";
+import { FormacionType } from "../../types";
+import { ErrorBaseDatos, ErrorConflicto, ErrorNoEncontrado } from "../../errores/mysql";
 
 interface FormacionesInterface {
-  conseguirTodos(): Promise<FormacionesType[]>;
-  conseguirUno(id: string): Promise<FormacionesType>;
-  crear(data: FormacionesType): Promise<QueryResult>;
-  actualizar(id: string, data: FormacionesType): Promise<QueryResult>;
+  conseguirTodos(): Promise<FormacionType[]>;
+  conseguirUno(id: string): Promise<FormacionType>;
+  crear(data: FormacionType): Promise<QueryResult>;
+  actualizar(id: string, data: FormacionType): Promise<QueryResult>;
   eliminar(id: string): Promise<QueryResult>;
 }
 
 class Formaciones implements FormacionesInterface {
-  async conseguirTodos(): Promise<FormacionesType[]> {
+  async conseguirTodos(): Promise<FormacionType[]> {
     try {
-      const [rows] = await (pool.query('SELECT * FROM formaciones') as Promise<[FormacionesType[], FieldPacket[]]>);
+      const [rows] = await (pool.query('SELECT * FROM formaciones') as Promise<[FormacionType[], FieldPacket[]]>);
       return rows;
     } catch (error: any) {
       console.log("Error en la base de datos: ", error)
@@ -22,9 +22,9 @@ class Formaciones implements FormacionesInterface {
     }
   }
 
-  async conseguirUno(id: string): Promise<FormacionesType> {
+  async conseguirUno(id: string): Promise<FormacionType> {
     try {
-      const [rows] = await (pool.query('SELECT * FROM formaciones WHERE id = ?', [id]) as Promise<[FormacionesType[], FieldPacket[]]>);
+      const [rows] = await (pool.query('SELECT * FROM formaciones WHERE id = ?', [id]) as Promise<[FormacionType[], FieldPacket[]]>);
       if (rows.length) {
         return rows[0];
       } else {
@@ -36,7 +36,7 @@ class Formaciones implements FormacionesInterface {
     }
   }
 
-  async crear(data: FormacionesType): Promise<QueryResult> {
+  async crear(data: FormacionType): Promise<QueryResult> {
     try {
       const { id, nombre, nombre_departamento, nombre_municipio } = data;
       const [result] = await pool.query(
@@ -46,11 +46,14 @@ class Formaciones implements FormacionesInterface {
       return result;
     } catch (error: any) {
       console.log("Error en la base de datos: ", error)
+      if (error.code == "ER_DUP_ENTRY") {
+        if (error.sqlMessage.includes("PRIMARY")) throw new ErrorConflicto("Ya existe una formacion con ese número de ficha")
+      }
       throw new ErrorBaseDatos("Error en la base de datos")
     }
   }
 
-  async actualizar(id: string, data: FormacionesType): Promise<QueryResult> {
+  async actualizar(id: string, data: FormacionType): Promise<QueryResult> {
     try {
       const { nombre, nombre_municipio, nombre_departamento } = data;
       const [result] = await pool.query(
