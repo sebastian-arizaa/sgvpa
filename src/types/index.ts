@@ -61,3 +61,5 @@ export type JwtPayloadType = {
   userTipo: 'admin' | 'instructor' | 'aprendiz' | null | undefined,
   userData: { id: string } | AprendizType | InstructorType | null | undefined
 }
+
+export type ButtonVariante = 'primario' | 'secundario' | 'terciario' | 'peligro';

@@ -1,6 +1,5 @@
 import React, { ButtonHTMLAttributes } from 'react';
-
-type ButtonVariante = 'primario' | 'secundario' | 'terciario' | 'peligro';
+import { ButtonVariante } from '../../../types';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variante?: ButtonVariante;

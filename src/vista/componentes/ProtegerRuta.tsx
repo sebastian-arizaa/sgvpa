@@ -10,6 +10,7 @@ interface Props {
 
 export function ProteccionSession({ children, retornaConSession, cargando }: Props) {
   const location = useLocation();
+  console.log("🚀 ~ ProteccionSession ~ location:", location)
   const { userTipo } = useContext(SessionContext)
 
   if (!cargando) {

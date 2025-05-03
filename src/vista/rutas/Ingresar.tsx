@@ -56,6 +56,7 @@ export function Ingresar() {
           <Input
             className="hidden"
             checked={isChecked("instructores|instructor")}
+            required={undefined}
             name="perfil"
             type="radio"
             value="instructores|instructor"
@@ -92,6 +93,8 @@ export function Ingresar() {
           label="Número identificación"
         />
         <Input
+          type="password"
+          verCopiar={false}
           name="contraseña"
           register={register} rules={{
             validate: (value) => {

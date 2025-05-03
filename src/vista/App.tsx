@@ -8,6 +8,12 @@ import { useEffect, useState } from "react"
 import { JwtPayloadType } from "../types"
 import { SessionContext } from "./context/SessionContext"
 import { Aprendices } from "./rutas/Aprendices"
+import { PerfilAprendiz } from "./rutas/PerfilAprendiz"
+import { PerfilInstructor } from "./rutas/PerfilInstructor"
+import { PerfilFormacion } from "./rutas/PerfilFormacion"
+import { CrearAprendiz } from "./rutas/CrearAprendiz"
+import { CrearInstructor } from "./rutas/CrearInstructor"
+import { CrearFormacion } from "./rutas/CrearFormacion"
 
 function App() {
   const [sesionValue, setSesionValue] = useState<JwtPayloadType | null>({ userData: null, userTipo: null })
@@ -24,6 +30,7 @@ function App() {
       } catch (error) {
         console.log(error)
         setCargando(false)
+        // location.hash = "#/ingresar"
       }
     }
     auth()
@@ -44,6 +51,12 @@ function App() {
                 <Aprendices />
               </ProteccionSession>
             } />
+            <Route path="/perfil/aprendiz/:id" element={<PerfilAprendiz />} />
+            <Route path="/perfil/instructor/:id" element={<PerfilInstructor />} />
+            <Route path="/perfil/formacion/:id" element={<PerfilFormacion />} />
+            <Route path="/crear/aprendiz" element={<CrearAprendiz />} />
+            <Route path="/crear/instructor" element={<CrearInstructor />} />
+            <Route path="/crear/formacion" element={<CrearFormacion />} />
           </Routes>
           <Footer />
         </div>
