@@ -10,8 +10,8 @@ import { useEffect, useState } from "react";
 export function CrearAprendiz() {
   // const [cargando, setCargando] = useState(true)
   const [mensajeErrorBD, setMensajeErrorBD] = useState<string | null>("")
-  const [formacionEncontrada, setFormacionEncontrada] = useState<FormacionType | null | undefined>(undefined)
-  const { register, handleSubmit, formState: { errors }, watch, reset } = useForm()
+  const [formacionEncontrada, setFormacionEncontrada] = useState<FormacionType | null>(null)
+  const { register, handleSubmit, formState: { errors }, watch, reset, setError, clearErrors } = useForm()
 
   const onSubmit = handleSubmit(async (formData) => {
     try {
@@ -64,10 +64,29 @@ export function CrearAprendiz() {
     }
   }
 
+  const consultarFormacion = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const numeroFichaActual = watch().numeroFichaActual
+    if (numeroFichaActual) {
+      try {
+        const { data } = await appAxios.get(`/server/formaciones/uno/${numeroFichaActual}`)
+        setFormacionEncontrada(data)
+        clearErrors("numeroFichaActual")
+      } catch (error: any) {
+        setError("numeroFichaActual", { message: "No existe esa formación con ese número de identificación", type: "validate" }, { shouldFocus: true })
+        console.log("this the erorr: ", error)
+      }
+    }
+  }
+
   useEffect(() => {
     setMensajeErrorBD(null)
-    setFormacionEncontrada(undefined)
   }, [watch().numeroIdentificacion, watch().numeroFichaActual, watch().email])
+
+  useEffect(() => {
+    setFormacionEncontrada(null)
+    clearErrors("numeroFichaActual")
+  }, [watch().numeroFichaActual])
 
   return (
     <div className="grow flex flex-col items-center justify-center gap-4 w-full px-[20%]">
@@ -158,24 +177,10 @@ export function CrearAprendiz() {
           label="Número ficha actual"
           button="Buscar"
           buttonVariante='primario'
-          buttonOnclick={async (e) => {
-            e.preventDefault();
-            const numeroFichaActual = watch().numeroFichaActual
-            if (numeroFichaActual) {
-              try {
-                console.log("Buscar=", watch().numeroFichaActual)
-                const { data } = await appAxios.get(`/server/formaciones/uno/${numeroFichaActual}`)
-                setFormacionEncontrada(data)
-                console.log("🚀 ~ CrearAprendiz ~ data:", data)
-              } catch (error: any) {
-                setFormacionEncontrada(null)
-                console.log("this the erorr: ", error)
-              }
-            }
-          }}
+          buttonOnclick={consultarFormacion}
         />
         {formacionEncontrada && <p className="w-full text-sm font-light">{formacionEncontrada.nombre} - {formacionEncontrada.nombre_municipio}</p>}
-        {formacionEncontrada === null && <p className="w-full text-sm font-light text-red-500">No existe esa formación con ese número de identificación</p>}
+        {/* {formacionEncontrada === null && <p className="w-full text-sm font-light text-red-500">No existe esa formación con ese número de identificación</p>} */}
         <div className="w-full flex gap-4">
           <Input
             name="telefono"

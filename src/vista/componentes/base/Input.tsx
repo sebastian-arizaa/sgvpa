@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useEffect, useRef } from 'react';
+import { InputHTMLAttributes, useRef } from 'react';
 import { UseFormRegister, RegisterOptions, FieldErrors } from 'react-hook-form';
 import { Button } from './Button';
 import { ButtonVariante } from '../../../types';

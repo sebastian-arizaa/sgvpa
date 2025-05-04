@@ -32,6 +32,9 @@ class Formaciones implements FormacionesInterface {
       }
     } catch (error: any) {
       console.log("Error en la base de datos: ", error)
+      if (error instanceof ErrorNoEncontrado) {
+        throw error
+      }
       throw new ErrorBaseDatos("Error en la base de datos")
     }
   }

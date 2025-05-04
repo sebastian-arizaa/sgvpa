@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { formaciones } from "../../modelo/bdMysql/formaciones";
-import { ErrorConflicto, ErrorNoEncontrado } from "../../errores/mysql";
+import { ErrorBaseDatos, ErrorConflicto, ErrorNoEncontrado } from "../../errores/mysql";
 
 interface FormacionesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
@@ -27,10 +27,8 @@ class FormacionesControlador implements FormacionesControladorInterface {
       res.json(resultado);
     } catch (error: any) {
       console.log("Error: ", error)
-      if (error instanceof ErrorNoEncontrado) {
-        res.status(404).send(error.mensaje)
-      }
-      res.status(500).end()
+      if (error instanceof ErrorNoEncontrado) res.status(404).send(error.mensaje)
+      if (error instanceof ErrorBaseDatos) res.status(500).end()
     }
   }
   async crear(req: Request, res: Response) {

@@ -9,7 +9,7 @@ export function PerfilInstructor() {
   const [editando, setEditando] = useState(false)
   // const [cargando, setCargando] = useState(true)
   const [cambiandoContraseña, setCambiandoContraseña] = useState(false)
-  const { register, handleSubmit, formState: { errors }, watch, reset } = useForm()
+  const { register, handleSubmit, formState: { errors }, reset } = useForm()
 
   let instructor: InstructorType = {
     nombre: "Julio",

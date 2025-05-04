@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { aprendices } from "../../modelo/bdMysql/aprendices";
 import { generaTokenAcceso } from "../../utils/jwt";
-import { ErrorBaseDatos, ErrorConflicto, ErrorViolacionLlaveForanea } from "../../errores/mysql";
+import { ErrorBaseDatos, ErrorConflicto, ErrorNoEncontrado, ErrorViolacionLlaveForanea } from "../../errores/mysql";
 
 interface AprendicesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
@@ -30,7 +30,8 @@ class AprendicesControlador implements AprendicesControladorInterface {
       res.json(respuesta);
     } catch (error: any) {
       console.log("Error: ", error)
-      res.status(500).end()
+      if (error instanceof ErrorNoEncontrado) res.status(404).send(error.mensaje)
+      if (error instanceof ErrorBaseDatos) res.status(500).end()
     }
   }
   async conseguirTodosPorInstructor(req: Request, res: Response) {
@@ -71,7 +72,9 @@ class AprendicesControlador implements AprendicesControladorInterface {
       res.json(respuesta);
     } catch (error: any) {
       console.log("Error: ", error)
-      res.status(500).end()
+      if (error instanceof ErrorConflicto) res.status(409).send(error.mensaje)
+      if (error instanceof ErrorBaseDatos) res.status(500).send(error.mensaje)
+      if (error instanceof ErrorViolacionLlaveForanea) res.status(404).send(error.mensaje)
     }
   }
   async eliminar(req: Request, res: Response) {

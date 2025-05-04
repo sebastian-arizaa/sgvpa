@@ -34,6 +34,9 @@ class Aprendices implements AprendicesInterface {
       }
     } catch (error: any) {
       console.log("Error en la base de datos: ", error)
+      if (error instanceof ErrorNoEncontrado) {
+        throw error
+      }
       throw new ErrorBaseDatos("Error en la base de datos")
     }
   }
@@ -134,6 +137,7 @@ class Aprendices implements AprendicesInterface {
 
   async actualizar(id: string, data: AprendizType): Promise<QueryResult> {
     try {
+      console.log(data)
       const { id: nuevoId, nombre, apellidos, telefono, email, hash_contraseña, salt, formacion_actual_id } = data;
       const [result] = await pool.query(
         'UPDATE aprendices SET id = ?, nombre = ?, apellidos = ?, telefono = ?, email = ?, hash_contraseña = ?, salt = ?, formacion_actual_id = ? WHERE id = ?',
@@ -142,7 +146,15 @@ class Aprendices implements AprendicesInterface {
       return result;
     } catch (error: any) {
       console.log("Error en la base de datos: ", error)
-      throw new ErrorBaseDatos("Error en la base de datos")
+      if (error.code === 'ER_DUP_ENTRY') {
+        if (error.sqlMessage.includes("email")) throw new ErrorConflicto('Ya existe un aprendiz con ese correo electrónico.');
+        if (error.sqlMessage.includes("PRIMARY")) throw new ErrorConflicto('Ya existe un aprendiz con ese número identificación.');
+      } else if (error.code.includes("ER_NO_REFERENCED_ROW")) {
+        if (error.sqlMessage.includes("formaciones")) throw new ErrorViolacionLlaveForanea('No existe una formacion con ese numero identificación.');
+      } else {
+        throw new ErrorBaseDatos("Error al crear el aprendiz en la base de datos.")
+      }
+      throw error
     }
   }
 

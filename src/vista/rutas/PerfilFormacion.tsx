@@ -3,15 +3,15 @@ import { Input } from "../componentes/base/Input";
 import { Title } from "../componentes/base/Title";
 import { Button } from "../componentes/base/Button";
 import { useState } from "react";
-import { FormacionesType } from "../../types";
+import { FormacionType } from "../../types";
 import { Select } from "../componentes/base/Select";
 
 export function PerfilFormacion() {
   const [editando, setEditando] = useState(false)
   // const [cargando, setCargando] = useState(true)
-  const { register, handleSubmit, formState: { errors }, watch, reset } = useForm()
+  const { register, handleSubmit, formState: { errors }, reset } = useForm()
 
-  let formacion: FormacionesType = {
+  let formacion: FormacionType = {
     nombre: "Desarollo de Software",
     id: "7896321",
     nombre_departamento: "Boyaca",
