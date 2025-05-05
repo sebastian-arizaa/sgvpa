@@ -19,3 +19,15 @@ export const generaTokenAcceso = async (res: Response, payload: JwtPayloadType, 
     res.status(401).send("Acceso no permitido, contraseña incorrecta");
   }
 }
+
+export const actualizarTokenAcceso = async (res: Response, payload: JwtPayloadType) => {
+  console.log("Actualiza token de acceso")
+  res.clearCookie("token_acceso")
+  const token = jwt.sign(payload, dotenvConfig.SECRET_WORD, { expiresIn: "1h", })
+  res.cookie("token_acceso", token, {
+    secure: dotenvConfig.NODE_ENV == "production",
+    httpOnly: true,
+    sameSite: dotenvConfig.NODE_ENV == "production" ? "strict" : "lax",
+    maxAge: 60 * 60 * 1000,
+  })
+}

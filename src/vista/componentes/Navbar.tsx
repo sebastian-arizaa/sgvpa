@@ -64,7 +64,7 @@ export function Navbar() {
               <li>
                 <NavLink
                   className="flex items-center justify-center h-12 w-12 border-green-200 bg-green-500 text-white font-semibold cursor-pointer"
-                  to="/perfil"
+                  to="/miperfil"
                 >{letraPerfil}</NavLink>
               </li>
             </div>

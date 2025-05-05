@@ -57,6 +57,7 @@ class Instructores implements InstructoresInterface {
 
   async actualizar(id: string, data: InstructorType): Promise<QueryResult> {
     try {
+      console.log("DATA FROM modelo: >>>>>>>>>>>: ", data)
       const { id: nuevoId, nombre, apellidos, telefono, email, hash_contraseña, salt } = data;
       const [result] = await pool.query(
         'UPDATE instructores SET id = ?, nombre = ?, apellidos = ?, telefono = ?, email = ?, hash_contraseña = ?, salt = ? WHERE id = ?',

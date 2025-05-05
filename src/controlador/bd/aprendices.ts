@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { aprendices } from "../../modelo/bdMysql/aprendices";
-import { generaTokenAcceso } from "../../utils/jwt";
+import { actualizarTokenAcceso, generaTokenAcceso } from "../../utils/jwt";
 import { ErrorBaseDatos, ErrorConflicto, ErrorNoEncontrado, ErrorViolacionLlaveForanea } from "../../errores/mysql";
 
 interface AprendicesControladorInterface {
@@ -68,7 +68,12 @@ class AprendicesControlador implements AprendicesControladorInterface {
   async actualizar(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const respuesta = await aprendices.actualizar(id, req.body);
+      const respuesta = await aprendices.actualizar(id, req.body.data);
+      if (req.body.actualizarToken) {
+        actualizarTokenAcceso(res, { userTipo: "aprendiz", userData: req.body.data })
+        res.json({ userTipo: "aprendiz", userData: req.body.data })
+        return
+      }
       res.json(respuesta);
     } catch (error: any) {
       console.log("Error: ", error)

@@ -11,8 +11,8 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   requerido?: boolean | null;
   labelClassName?: string,
-  name: string;
-  register: UseFormRegister<any>;
+  name?: string;
+  register?: UseFormRegister<any>;
   rules?: RegisterOptions;
   errors?: FieldErrors;
   button?: string;
@@ -89,9 +89,9 @@ export function Input({
         <input
           id={props.id}
           className={estilosFinal}
-          {...register(name, rules)}
+          {...register && name && { ...register(name, rules) }}
           ref={(e) => {
-            register(name, rules).ref(e);
+            if (register && name) register(name, rules).ref(e);
             inputRef.current = e
           }}
           {...props}
@@ -114,7 +114,7 @@ export function Input({
           </div>
         )}
       </div>
-      {errors && errors[name]?.type === "validate" && <span className="w-full text-sm text-red-500">{(errors[name].message as string)}</span>}
+      {errors && errors[name || '']?.type === "validate" && <span className="w-full text-sm text-red-500">{(errors[name || '']?.message as string)}</span>}
     </div>
   );
 };

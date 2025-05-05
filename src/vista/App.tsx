@@ -14,9 +14,10 @@ import { PerfilFormacion } from "./rutas/PerfilFormacion"
 import { CrearAprendiz } from "./rutas/CrearAprendiz"
 import { CrearInstructor } from "./rutas/CrearInstructor"
 import { CrearFormacion } from "./rutas/CrearFormacion"
+import { MiPerfil } from "./rutas/MiPerfil"
 
 function App() {
-  const [sesionValue, setSesionValue] = useState<JwtPayloadType | null>({ userData: null, userTipo: null })
+  const [sesionValue, setSesionValue] = useState<JwtPayloadType>({ userData: null, userTipo: null })
   const [cargando, setCargando] = useState(true)
 
   useEffect(() => {
@@ -57,6 +58,7 @@ function App() {
             <Route path="/crear/aprendiz" element={<CrearAprendiz />} />
             <Route path="/crear/instructor" element={<CrearInstructor />} />
             <Route path="/crear/formacion" element={<CrearFormacion />} />
+            <Route path="/miperfil" element={<MiPerfil />} />
           </Routes>
           <Footer />
         </div>
