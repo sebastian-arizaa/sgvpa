@@ -11,7 +11,6 @@ import { hashContraseña } from "../../utils";
 export function PerfilAprendiz() {
   const { id } = useParams()
   const navigation = useNavigate()
-  const [editando, setEditando] = useState(false)
   const [aprendiz, setAprendiz] = useState<AprendizType>({
     nombre: "",
     apellidos: "",
@@ -22,6 +21,7 @@ export function PerfilAprendiz() {
     salt: "",
     telefono: "",
   })
+  const [editando, setEditando] = useState(false)
   const [formacionEncontrada, setFormacionEncontrada] = useState<FormacionType | null | undefined>(undefined)
   const [mensajeErrorBD, setMensajeErrorBD] = useState<string | null>("")
   // const [cargando, setCargando] = useState(true)

@@ -65,7 +65,13 @@ class Instructores implements InstructoresInterface {
       return result;
     } catch (error: any) {
       console.log("Error en la base de datos: ", error)
-      throw new ErrorBaseDatos("Error en la base de datos")
+      if (error.code === 'ER_DUP_ENTRY') {
+        if (error.sqlMessage.includes("email")) throw new ErrorConflicto('Ya existe un instructor con ese correo electrónico.');
+        if (error.sqlMessage.includes("PRIMARY")) throw new ErrorConflicto('Ya existe un instructor con ese número identificación.');
+      } else {
+        throw new ErrorBaseDatos("Error al crear el instructor en la base de datos.")
+      }
+      throw error
     }
   }
 

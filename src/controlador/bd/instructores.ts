@@ -48,7 +48,8 @@ class InstructoresControlador implements InstructoresControladorInterface {
       res.json(respuesta);
     } catch (error: any) {
       console.log("Error: ", error)
-      res.status(500).end()
+      if (error instanceof ErrorConflicto) res.status(409).send(error.mensaje)
+      if (error instanceof ErrorBaseDatos) res.status(500).send(error.mensaje)
     }
   }
   async eliminar(req: Request, res: Response) {

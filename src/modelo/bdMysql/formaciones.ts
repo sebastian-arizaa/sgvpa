@@ -58,14 +58,17 @@ class Formaciones implements FormacionesInterface {
 
   async actualizar(id: string, data: FormacionType): Promise<QueryResult> {
     try {
-      const { nombre, nombre_municipio, nombre_departamento } = data;
+      const { id: nuevoId, nombre, nombre_municipio, nombre_departamento } = data;
       const [result] = await pool.query(
-        'UPDATE formaciones SET nombre = ?, nombre_municipio = ?, nombre_departamento = ? WHERE id = ?',
-        [nombre, nombre_municipio, nombre_departamento, id]
+        'UPDATE formaciones SET id = ?, nombre = ?, nombre_municipio = ?, nombre_departamento = ? WHERE id = ?',
+        [nuevoId, nombre, nombre_municipio, nombre_departamento, id]
       );
       return result;
     } catch (error: any) {
       console.log("Error en la base de datos: ", error)
+      if (error.code == "ER_DUP_ENTRY") {
+        if (error.sqlMessage.includes("PRIMARY")) throw new ErrorConflicto("Ya existe una formacion con ese número de ficha")
+      }
       throw new ErrorBaseDatos("Error en la base de datos")
     }
   }
