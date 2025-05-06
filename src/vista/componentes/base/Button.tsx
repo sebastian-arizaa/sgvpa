@@ -13,13 +13,13 @@ export function Button({
   className,
   ...props
 }: Props) {
-  let estilosBoton = 'w-full p-2 cursor-pointer font-semibold ';
+  let estilosBoton = `w-full p-2 font-semibold ${!props.disabled ? 'cursor-pointer' : ''} `;
   switch (variante) {
     case 'primario':
-      estilosBoton += 'bg-green-500 hover:bg-green-600 text-white';
+      estilosBoton += `bg-green-500 text-white ${!props.disabled ? 'hover:bg-green-600' : ''}`;
       break;
     case 'secundario':
-      estilosBoton += 'border border-gray-200 hover:bg-gray-100';
+      estilosBoton += `border border-gray-200 ${!props.disabled ? 'hover:bg-gray-100' : ''}`;
       break;
     case 'terciario':
       estilosBoton += '';
@@ -32,7 +32,7 @@ export function Button({
       break;
   }
 
-  const estilosFinal = `${estilosBoton} ${className || ''}`;
+  const estilosFinal = `${estilosBoton} ${className || ''} ${props.disabled ? 'opacity-50' : ''}`;
   return (
     <button
       className={estilosFinal}

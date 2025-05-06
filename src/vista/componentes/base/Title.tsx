@@ -26,7 +26,7 @@ export function Title({
       titleClassName += ' ';
       break;
     case 'lineaAbajo':
-      titleClassName += ' border-b-[1px] border-gray-200 pb-4';
+      titleClassName += ' border-b border-gray-200 pb-4';
       break;
     default:
       titleClassName += ' ';

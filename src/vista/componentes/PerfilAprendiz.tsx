@@ -117,24 +117,6 @@ export function PerfilAprendiz({ aprendizData }: Props) {
   useEffect(() => {
     setEditando(false)
     setCambiandoContraseña(false)
-    // const conseguirAprendiz = async () => {
-    //   try {
-    //     const { data: aprendiz } = await appAxios.get<AprendizType>(`/server/aprendices/uno/${id}`);
-    //     setAprendiz(aprendiz)
-    //     setValue("nombre", aprendiz.nombre)
-    //     setValue("apellidos", aprendiz.apellidos)
-    //     setValue("email", aprendiz.email || '')
-    //     setValue("telefono", aprendiz.telefono || '')
-    //     setValue("numeroIdentificacion", aprendiz.id)
-    //     setValue("numeroFichaActual", aprendiz.formacion_actual_id)
-    //     setValue("contraseña", '')
-    //     setValue("nuevaContraseña", '')
-    //     setValue("repetirContraseña", '')
-    //   } catch (error: any) {
-    //     console.log(error)
-    //   }
-    // }
-    // conseguirAprendiz()
     if (aprendizData) {
       setAprendiz(aprendizData)
       setValue("nombre", aprendizData.nombre)

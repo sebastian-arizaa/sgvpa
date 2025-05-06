@@ -95,6 +95,8 @@ export function PerfilInstructor({ instructorData }: Props) {
   }
 
   useEffect(() => {
+    setEditando(false)
+    setCambiandoContraseña(false)
     const conseguirInstructor = async () => {
       if (instructorData) {
         setInstructor(instructorData)
@@ -130,7 +132,6 @@ export function PerfilInstructor({ instructorData }: Props) {
         <form onSubmit={onSubmit} className="flex flex-col items-center gap-2 w-full max-w-[600px]">
           <div className="flex gap-4 w-full">
             <Input
-              defaultValue={instructor.nombre}
               disabled={!editando}
               name="nombre"
               requerido={editando ? true : null}
@@ -148,7 +149,6 @@ export function PerfilInstructor({ instructorData }: Props) {
               label="Nombres"
             />
             <Input
-              defaultValue={instructor.apellidos}
               disabled={!editando}
               name="apellidos"
               requerido={editando ? true : null}
@@ -167,7 +167,6 @@ export function PerfilInstructor({ instructorData }: Props) {
             />
           </div>
           <Input
-            defaultValue={instructor.id}
             disabled={!editando}
             name="numeroIdentificacion"
             requerido={editando ? true : null}
@@ -240,7 +239,6 @@ export function PerfilInstructor({ instructorData }: Props) {
           )}
           <div className="w-full flex gap-4">
             <Input
-              defaultValue={instructor.telefono || ''}
               disabled={!editando}
               name="telefono"
               requerido={editando ? false : null}
@@ -257,7 +255,6 @@ export function PerfilInstructor({ instructorData }: Props) {
               label="Telefono"
             />
             <Input
-              defaultValue={instructor.email || ''}
               disabled={!editando}
               name="email"
               requerido={editando ? false : null}

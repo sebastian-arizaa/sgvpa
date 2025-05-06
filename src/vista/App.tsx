@@ -15,6 +15,7 @@ import { CrearAprendiz } from "./rutas/CrearAprendiz"
 import { CrearInstructor } from "./rutas/CrearInstructor"
 import { CrearFormacion } from "./rutas/CrearFormacion"
 import { MiPerfil } from "./rutas/MiPerfil"
+import { Instructores } from "./rutas/Instructores"
 
 function App() {
   const [sesionValue, setSesionValue] = useState<JwtPayloadType>({ userData: null, userTipo: null })
@@ -42,7 +43,7 @@ function App() {
         <div className="relative flex flex-col h-full min-h-dvh">
           <Navbar />
           <Routes>
-            <Route path="/ingresar" element={
+            {/* <Route path="/ingresar" element={
               <ProteccionSession cargando={cargando} retornaConSession={false}>
                 <Ingresar />
               </ProteccionSession>
@@ -51,7 +52,11 @@ function App() {
               <ProteccionSession cargando={cargando} retornaConSession={true}>
                 <Aprendices />
               </ProteccionSession>
-            } />
+            } /> */}
+            <Route path="/ingresar" element={<Ingresar />} />
+            <Route path="/aprendices" element={<Aprendices />} />
+            <Route path="/instructores" element={<Instructores />} />
+
             <Route path="/perfil/aprendiz/:id" element={<PerfilAprendiz />} />
             <Route path="/perfil/instructor/:id" element={<PerfilInstructor />} />
             <Route path="/perfil/formacion/:id" element={<PerfilFormacion />} />

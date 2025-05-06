@@ -96,7 +96,7 @@ export function Input({
           }}
           {...props}
         />
-        {button && <Button onClick={buttonOnclick} className="h-full w-1/4!" variante="primario">Buscar</Button>}
+        {button && <Button onClick={buttonOnclick} className="h-full w-1/4!" variante="primario">{button}</Button>}
         {props.type == "password" && verCopiar && (
           <div className='absolute right-2 top-1/2 -translate-y-1/2 flex gap-4 cursor-pointer'>
             <span
