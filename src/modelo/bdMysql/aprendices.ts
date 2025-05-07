@@ -42,6 +42,7 @@ class Aprendices implements AprendicesInterface {
   }
 
   async conseguirTodosPorInstructor(id: string): Promise<InnerAprendizInstructorFormacionType[]> {
+    console.log("🚀 ~ Aprendices ~ conseguirTodosPorInstructor ~ id:", id)
     try {
       const [rows] = await (pool.query(`SELECT
         a.id,
@@ -104,7 +105,7 @@ class Aprendices implements AprendicesInterface {
       if (rows.length) {
         return rows;
       } else {
-        throw new ErrorNoEncontrado("No existen aprendices relacionados con ese instructor")
+        throw new ErrorNoEncontrado("No existen aprendices relacionados con esa formación")
       }
     } catch (error: any) {
       console.log("Error en la base de datos: ", error)

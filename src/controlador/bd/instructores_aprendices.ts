@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { instructoresAprendices } from "../../modelo/bdMysql/instructores_aprendices";
+import { ErrorBaseDatos, ErrorConflicto, ErrorViolacionLlaveForanea } from "../../errores/mysql";
 
 interface InstructoresAprendicesControladorInterface {
   conseguirTodos(req: Request, res: Response): void;
@@ -35,7 +36,9 @@ class InstructoresAprendicesControlador implements InstructoresAprendicesControl
       res.json(resultado);
     } catch (error: any) {
       console.log("Error: ", error)
-      res.status(500).end()
+      if (error instanceof ErrorConflicto) res.status(409).send(error.mensaje)
+      if (error instanceof ErrorBaseDatos) res.status(500).send(error.mensaje)
+      if (error instanceof ErrorViolacionLlaveForanea) res.status(404).send(error.mensaje)
     }
   }
   async actualizar(req: Request, res: Response) {

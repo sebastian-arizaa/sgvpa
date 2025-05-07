@@ -83,7 +83,7 @@ export function PerfilAprendiz({ aprendizData }: Props) {
       email: aprendiz.email || '',
       telefono: aprendiz.telefono || '',
       numeroIdentificacion: aprendiz.id,
-      numeroFichaActual: aprendiz.formacion_actual_id,
+      numeroFichaActual: aprendiz.formacion_actual_id || '',
     })
   }
 

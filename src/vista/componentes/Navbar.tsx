@@ -18,7 +18,6 @@ export function Navbar() {
   switch (userTipo) {
     case "admin":
       links = [
-        { to: "/aprendices/1027", text: "Aprendices" },
         { to: "/instructores", text: "Instructores" },
         { to: "/formaciones", text: "Formaciones" },
         { to: "/ingresar", text: "Cerrar Sesion", onClick: () => { appAxios.get("/server/sesion/salir"); setSesionValue({ userTipo: null, userData: null }) } }
@@ -26,13 +25,13 @@ export function Navbar() {
       break;
     case "instructor":
       links = [
-        { to: "/aprendices", text: "Mis aprendices" },
+        { to: "/mis-aprendices", text: "Mis aprendices" },
         { to: "/ingresar", text: "Cerrar Sesion", onClick: () => { appAxios.get("/server/sesion/salir"); setSesionValue({ userTipo: null, userData: null }) } }
       ]
       break;
     case "aprendiz":
       links = [
-        { to: "/actas", text: "Mis Actas" },
+        { to: "/mis-actas", text: "Mis Actas" },
         { to: "/ingresar", text: "Cerrar Sesion", onClick: () => { appAxios.get("/server/sesion/salir"); setSesionValue({ userTipo: null, userData: null }) } }
       ]
       break;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { InstructorType } from "../../types";
+import { FormacionType } from "../../types";
 import { appAxios } from "../../utils/axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -7,11 +7,11 @@ import Paginacion from "../componentes/Paginacion";
 import { Filtros } from "../componentes/Filtros";
 import { Button } from "../componentes/base/Button";
 
-export function Instructores() {
+export function Formaciones() {
   const navigation = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [instructores, setInstructores] = useState<InstructorType[]>([])
-  const [instructoresfiltrados, setInstructoresfiltrados] = useState<InstructorType[]>([])
+  const [formaciones, setFormaciones] = useState<FormacionType[]>([])
+  const [formacionesFiltradas, setFormacionesFiltradas] = useState<FormacionType[]>([])
   const [paginacion, setPaginacion] = useState({ inicio: 1, fin: 10 })
   const [renderizoPorParamentros, setRenderizoPorParamentros] = useState(false)
   const { register, handleSubmit, setValue } = useForm()
@@ -21,15 +21,16 @@ export function Instructores() {
     setValue("datoFiltro", searchParams.get("datoFiltro") || "")
   }, [])
 
+
   const onClick = handleSubmit((data) => {
     const newSearchParams = new URLSearchParams(searchParams.toString())
     if (data.tipoFiltro === "Por Nombre") {
-      setInstructoresfiltrados(instructores.filter(instructores => (instructores.nombre.toLowerCase() + " " + instructores.apellidos.toLowerCase()).includes(data.datoFiltro)))
+      setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.nombre.toLowerCase().includes(data.datoFiltro)))
       newSearchParams.set("tipoFiltro", "Por Nombre")
       newSearchParams.set("datoFiltro", data.datoFiltro)
       setSearchParams(newSearchParams)
     } else {
-      setInstructoresfiltrados(instructores.filter(instructores => instructores.id.toLowerCase().includes(data.datoFiltro)))
+      setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.id.toLowerCase().includes(data.datoFiltro)))
       newSearchParams.set("tipoFiltro", "Por N. Identificación")
       newSearchParams.set("datoFiltro", data.datoFiltro)
       setSearchParams(newSearchParams)
@@ -37,28 +38,28 @@ export function Instructores() {
     setPaginacion({ inicio: 1, fin: 10 })
   })
 
-  const renderizarInstructores = () => {
-    if (!instructoresfiltrados.length) return
-    let paginacionInstructores: InstructorType[] = []
+  const renderizarFormaciones = () => {
+    if (!formacionesFiltradas.length) return
+    let paginacionInstructores: FormacionType[] = []
     for (let i = (paginacion.inicio - 1); i < (paginacion.fin); i++) {
-      if (instructoresfiltrados[i]) {
-        paginacionInstructores.push(instructoresfiltrados[i])
+      if (formacionesFiltradas[i]) {
+        paginacionInstructores.push(formacionesFiltradas[i])
       } else {
         break;
       }
     }
-    return paginacionInstructores.map(instructor => (
+    return paginacionInstructores.map(formacion => (
       <div
-        key={instructor.id}
-        onClick={() => navigation(`/perfil/instructor/${instructor.id}`)}
+        key={formacion.id}
+        onClick={() => navigation(`/perfil/formacion/${formacion.id}`)}
         className="flex gap-2 justify-between items-center shadow-md border-t-4 border-gray-200 p-2 cursor-pointer hover:bg-gray-200"
       >
-        <p>{instructor.nombre} {instructor.apellidos}</p>
+        <p>{formacion.nombre} - {formacion.nombre_municipio}</p>
         <div>
           <Button
             onClick={(e) => {
               e.stopPropagation()
-              navigation(`/aprendices/instructor/${instructor.id}`)
+              navigation(`/aprendices/formacion/${formacion.id}`)
             }}
             variante="primario"
           >Ver Aprendices</Button>
@@ -68,26 +69,26 @@ export function Instructores() {
   }
 
   useEffect(() => {
-    const conseguirTodosInstructores = async () => {
+    const conseguirTodosFormaciones = async () => {
       try {
-        const { data: instructores } = await appAxios.get<InstructorType[]>("/server/instructores/todos")
-        const instructoresOrdenados = instructores.sort(({ nombre: NombreA }, { nombre: nombreB }) => {
+        const { data: formaciones } = await appAxios.get<FormacionType[]>("/server/formaciones/todos")
+        const instructoresOrdenados = formaciones.sort(({ nombre: NombreA }, { nombre: nombreB }) => {
           if (NombreA.toLowerCase() < nombreB.toLowerCase()) return -1;
           if (NombreA.toLowerCase() > nombreB.toLowerCase()) return 1;
           return 0
         })
-        setInstructoresfiltrados(instructoresOrdenados)
-        setInstructores(instructoresOrdenados)
+        setFormacionesFiltradas(instructoresOrdenados)
+        setFormaciones(instructoresOrdenados)
       } catch (error: any) {
         console.log("Error: ", error)
       }
     }
-    conseguirTodosInstructores()
+    conseguirTodosFormaciones()
   }, [])
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ instructoresfiltrados:", instructoresfiltrados)
-    if (instructoresfiltrados.length) {
+    console.log("🚀 ~ useEffect ~ formacionesFiltradas:", formacionesFiltradas)
+    if (formacionesFiltradas.length) {
       console.log("🚀 ~ useEffect ~ renderizoPorParamentros:", renderizoPorParamentros)
       const tipoFiltro = searchParams.get("tipoFiltro")
       const datoFiltro = searchParams.get("datoFiltro")
@@ -95,14 +96,14 @@ export function Instructores() {
       if (!datoFiltro) return
       if (renderizoPorParamentros) return
       if (tipoFiltro === "Por Nombre") {
-        setInstructoresfiltrados(instructores.filter(instructores => instructores.nombre.toLowerCase().includes(datoFiltro)))
+        setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.nombre.toLowerCase().includes(datoFiltro)))
       } else {
-        setInstructoresfiltrados(instructores.filter(instructores => instructores.id.toLowerCase().includes(datoFiltro)))
+        setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.id.toLowerCase().includes(datoFiltro)))
       }
       setRenderizoPorParamentros(true)
       setPaginacion({ inicio: 1, fin: 10 })
     }
-  }, [instructoresfiltrados])
+  }, [formacionesFiltradas])
 
   return (
     <div className="grow flex flex-col gap-4 w-full px-[20%]">
@@ -110,13 +111,13 @@ export function Instructores() {
         register={register}
         inputButtonOnClick={onClick}
         selectValues={["Por Nombre", "Por N. Identificación"]}
-        crearRuta="/crear/instructor"
-        crearButtonNombre="Crear Instructores"
+        crearRuta="/crear/formacion"
+        crearButtonNombre="Crear formaciones"
       />
       <div className="flex flex-col gap-4 w-full py-4 border-t border-gray-200">
-        {renderizarInstructores()}
+        {renderizarFormaciones()}
       </div>
-      <Paginacion paginacion={paginacion} setPaginacion={setPaginacion} data={instructoresfiltrados} />
+      <Paginacion paginacion={paginacion} setPaginacion={setPaginacion} data={formacionesFiltradas} />
     </div>
   )
 }

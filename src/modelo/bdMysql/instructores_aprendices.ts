@@ -1,7 +1,7 @@
 import { FieldPacket, QueryResult } from "mysql2";
 import { pool } from "../../server/conexion/bdMysql";
 import { InstructoresAprendicesType } from "../../types";
-import { ErrorBaseDatos, ErrorNoEncontrado } from "../../errores/mysql";
+import { ErrorBaseDatos, ErrorConflicto, ErrorNoEncontrado, ErrorViolacionLlaveForanea } from "../../errores/mysql";
 
 interface InstructoresAprendicesInterface {
   conseguirTodos(): Promise<InstructoresAprendicesType[]>;
@@ -38,14 +38,20 @@ class InstructoresAprendices implements InstructoresAprendicesInterface {
 
   async crear(data: InstructoresAprendicesType): Promise<QueryResult> {
     try {
-      const { instructor_id, aprendiz_id, activa } = data;
+      const { id, instructor_id, aprendiz_id, activa } = data;
       const [result] = await pool.query(
-        'INSERT INTO instructores_aprendices (instructor_id, aprendiz_id, activa) VALUES (?, ?, ?)',
-        [instructor_id, aprendiz_id, activa]
+        'INSERT INTO instructores_aprendices (id, instructor_id, aprendiz_id, activa) VALUES (?, ?, ?, ?)',
+        [id, instructor_id, aprendiz_id, activa]
       );
       return result;
     } catch (error: any) {
       console.log("Error en la base de datos: ", error)
+      if (error.code === "ER_DUP_ENTRY") {
+        if (error.sqlMessage.includes("PRIMARY")) throw new ErrorConflicto('El instructor ya tiene asignado este aprendiz');
+      } else if (error.code.includes("ER_NO_REFERENCED_ROW")) {
+        if (error.sqlMessage.includes("aprendices")) throw new ErrorViolacionLlaveForanea("No existe un aprendiz con es número identificación")
+        if (error.sqlMessage.includes("instructores")) throw new ErrorViolacionLlaveForanea("No existe un instructor con es número identificación")
+      }
       throw new ErrorBaseDatos("Error en la base de datos")
     }
   }

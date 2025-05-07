@@ -1,4 +1,4 @@
-import { RegisterOptions, UseFormRegister } from "react-hook-form";
+import { UseFormRegister } from "react-hook-form";
 import { Input } from "./base/Input";
 import { Select } from "./base/Select";
 import { Button } from "./base/Button";
@@ -36,9 +36,12 @@ export function Filtros({ register, selectValues, inputButtonOnClick, crearRuta,
           />
         </div>
       </div>
-      <div className="">
-        <Button onClick={() => navigation(crearRuta || '/')} variante="primario" className="w-max">{crearButtonNombre}</Button>
-      </div>
+      {crearButtonNombre && (
+        <div>
+          <Button onClick={() => navigation(crearRuta || '/')} variante="primario" className="w-max">{crearButtonNombre}</Button>
+        </div>
+      )}
+
     </div>
   )
 }
