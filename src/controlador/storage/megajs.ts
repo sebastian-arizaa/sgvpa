@@ -3,6 +3,8 @@ import { megaStorage } from "../../storage/megajs";
 import { Readable } from "node:stream";
 import { Nullable } from "megajs";
 
+const mimeTypes = { "pdf": "application/pdf", "doc": "application/msword", "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }
+
 interface MegaJsControladorInterface {
   conseguirUno(req: Request, res: Response): void,
   conseguirTodosNombres(req: Request, res: Response): void,
@@ -13,9 +15,17 @@ interface MegaJsControladorInterface {
 class MegaJsControlador implements MegaJsControladorInterface {
   async conseguirUno(req: Request, res: Response) {
     try {
-      const { nombreDirectorio, nombreArchivo } = req.body
+      const { nombreDirectorio, nombreArchivo } = req.params
       const archvio = await megaStorage.conseguirArchivo(nombreDirectorio, nombreArchivo)
       if (archvio) {
+        let extension: keyof typeof mimeTypes = "pdf"
+        if (archvio.name) {
+          const arreglo = archvio.name.split(".")
+          extension = (arreglo[arreglo.length - 1]) as keyof typeof mimeTypes
+        }
+        res.setHeader("Content-Type", mimeTypes[extension]);
+        res.setHeader("Content-Disposition", `attachment; filename="${archvio.name || ''}"`);
+        if (archvio.size) res.setHeader("Content-Length", archvio.size.toString());
         (archvio.download({}) as Readable).pipe(res)
       } else {
         res.status(404).send("Archivo no encontrado")
@@ -47,9 +57,10 @@ class MegaJsControlador implements MegaJsControladorInterface {
 
   async crear(req: Request, res: Response) {
     try {
-      const { nombreDirectorio } = req.params
+      const { nombreDirectorio, nuevoNombre, nombreGuardado } = req.body
       if (req.file) {
-        const respuesta = await megaStorage.crearArchivo(nombreDirectorio, req.file)
+        req.file.originalname = nuevoNombre
+        const respuesta = await megaStorage.crearArchivo(nombreDirectorio, req.file, nombreGuardado)
         if (respuesta) {
           res.send("Archivo guardado exitosamente!")
         } else {
@@ -66,7 +77,7 @@ class MegaJsControlador implements MegaJsControladorInterface {
 
   async eliminar(req: Request, res: Response) {
     try {
-      const { nombreDirectorio, nombreArchivo } = req.body
+      const { nombreDirectorio, nombreArchivo } = req.params
       const respuesta = await megaStorage.eliminarArchivo(nombreDirectorio, nombreArchivo)
       if (respuesta) {
         res.send("Archivo eliminado exitosamente!")

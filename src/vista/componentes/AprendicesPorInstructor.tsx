@@ -73,9 +73,7 @@ export function AprendicesPorInstructor({ instructorId }: Props) {
   }, [])
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ instructoresfiltrados:", aprendicesFiltrados)
     if (aprendicesFiltrados.length) {
-      console.log("🚀 ~ useEffect ~ renderizoPorParamentros:", renderizoPorParamentros)
       const tipoFiltro = searchParams.get("tipoFiltro")
       const datoFiltro = searchParams.get("datoFiltro")
       if (!tipoFiltro) return
@@ -96,7 +94,6 @@ export function AprendicesPorInstructor({ instructorId }: Props) {
     const conseguirTodosInstructores = async () => {
       try {
         const { data: aprendices } = await appAxios.get<InnerAprendizInstructorFormacionType[]>(`/server/aprendices/todos-por-instructor/${instructorId}`)
-        console.log("🚀 ~ conseguirTodosInstructores ~ aprendices:", aprendices)
         const aprendicesOrdenados = aprendices.sort(({ nombre: NombreA }, { nombre: nombreB }) => {
           if (NombreA.toLowerCase() < nombreB.toLowerCase()) return -1;
           if (NombreA.toLowerCase() > nombreB.toLowerCase()) return 1;

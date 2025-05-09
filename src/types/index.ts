@@ -55,6 +55,19 @@ export type AprendicesFormacionesType = {
   activa: boolean,
 }
 
+export type ActaType = {
+  id: string,
+  nombre: string,
+  aprendiz_id: string | null,
+  formacion_id: string | null,
+  plazo_maximo: string | null,
+  cerrada: boolean | null,
+  entregada: boolean | null,
+  estado: "Disponible" | "No Disponible" | "Finalizada",
+  nombre_archivo: string | null,
+  nombre_directorio: string,
+}
+
 export type UserTypes = AdminType | InstructorType | AprendizType
 
 export type InnerAprendizFormacionType = AprendizType & FormacionType & {

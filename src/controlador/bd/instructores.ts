@@ -77,6 +77,7 @@ class InstructoresControlador implements InstructoresControladorInterface {
     } catch (error: any) {
       console.log("Error: ", error)
       if (error instanceof ErrorBaseDatos) res.status(500).send(error.mensaje)
+      if (error instanceof ErrorNoEncontrado) res.status(404).send(error.mensaje)
     }
   }
 }

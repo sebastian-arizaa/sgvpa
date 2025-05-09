@@ -15,7 +15,7 @@ export function CrearInstructor() {
   const onSubmit = handleSubmit(async (formData) => {
     try {
       console.log("🚀 ~ onSubmit ~ formData:", formData)
-      const salt = generarSalt()
+      const salt = await generarSalt()
       const hash_contraseña = await hashContraseña(formData.contraseña, salt)
 
       if (!hash_contraseña) return console.log("No hay has Contraseña")

@@ -13,7 +13,7 @@ export function Button({
   className,
   ...props
 }: Props) {
-  let estilosBoton = `w-full p-2 font-semibold ${!props.disabled ? 'cursor-pointer' : ''} `;
+  let estilosBoton = `flex items-center justify-center w-full p-2 font-semibold ${!props.disabled ? 'cursor-pointer' : ''} `;
   switch (variante) {
     case 'primario':
       estilosBoton += `bg-green-500 text-white ${!props.disabled ? 'hover:bg-green-600' : ''}`;

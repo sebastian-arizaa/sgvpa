@@ -2,7 +2,7 @@ import { MutableFile } from "megajs";
 import { mega } from "../server/conexion/megajs";
 
 interface MegaStorageInterface {
-  crearArchivo(nombreDirectorio: string, file: Express.Multer.File): Promise<boolean>;
+  crearArchivo(nombreDirectorio: string, file: Express.Multer.File, nombreGuardado?: string): Promise<boolean>;
   eliminarArchivo(nombreDirectorio: string, nombreArchivo: string): Promise<boolean>;
   conseguirArchivo(nombreDirectorio: string, nombreArchivo: string): Promise<MutableFile | null>;
   crearDirectorio(nombreDirectorio: string): Promise<MutableFile>;
@@ -11,25 +11,25 @@ interface MegaStorageInterface {
 }
 
 class MegaStorage implements MegaStorageInterface {
-  crearArchivo(nombreDirectorio: string, archivo: Express.Multer.File): Promise<boolean> {
+  crearArchivo(nombreDirectorio: string, archivo: Express.Multer.File, nombreGuardado?: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.conseguirArchivo(nombreDirectorio, archivo.originalname).then(archivoExistente => {
-        if(!archivoExistente) {
+      this.conseguirArchivo(nombreDirectorio, nombreGuardado || archivo.originalname).then(archivoExistente => {
+        if (!archivoExistente) {
           this.subirArchivoNuevo(nombreDirectorio, archivo, resolve, reject);
-        }else {
+        } else {
           archivoExistente.delete(true)
             .then(() => {
-                console.log("archivo eliminado correctamente:");
-                this.subirArchivoNuevo(nombreDirectorio, archivo, resolve, reject);
+              console.log("archivo eliminado correctamente:");
+              this.subirArchivoNuevo(nombreDirectorio, archivo, resolve, reject);
             })
             .catch(error => {
-                console.error("Error al eliminar archivo: ", error);
-                reject(false);
+              console.error("Error al eliminar archivo: ", error);
+              reject(false);
             });
         }
       }).catch(error => {
-          console.error("Error al conseguir archivo:", error);
-          reject(false);
+        console.error("Error al conseguir archivo:", error);
+        reject(false);
       });
     });
   }
@@ -45,17 +45,17 @@ class MegaStorage implements MegaStorageInterface {
         resolve(true);
       });
     }).catch(error => {
-        console.error("Error al conseguir directorio:", error);
-        reject(false);
+      console.error("Error al conseguir directorio:", error);
+      reject(false);
     })
   }
 
   eliminarArchivo(nombreDirectorio: string, nombreArchivo: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.conseguirArchivo(nombreDirectorio, nombreArchivo).then(archivo => {
-        if(archivo) {
-          archivo.delete(true, (error)=> {
-            if(error) {
+        if (archivo) {
+          archivo.delete(true, (error) => {
+            if (error) {
               console.error("Error al eliminar archivo:", error);
               reject(false);
               return
@@ -63,7 +63,7 @@ class MegaStorage implements MegaStorageInterface {
             console.log("archivo eliminado correctamente:", nombreArchivo);
             resolve(true);
           })
-        }else {
+        } else {
           resolve(false)
         }
       }).catch(error => {

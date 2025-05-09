@@ -15,6 +15,7 @@ import { aprendicesFormacionesRouter } from "./rutas/bd/aprendices_formaciones";
 import { megajsRouter } from "./rutas/storage/megajs";
 import { JwtPayloadType } from "../types";
 import { sesionRouter } from "./rutas/sesion";
+import { actasRouter } from "./rutas/bd/actas";
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -43,6 +44,7 @@ app.use("/server/aprendices", aprendicesRouter)
 app.use("/server/formaciones", formacionesRouter)
 app.use("/server/instructores-aprendices", instructoresAprendicesRouter)
 app.use("/server/aprendices-formaciones", aprendicesFormacionesRouter)
+app.use("/server/actas", actasRouter)
 app.use("/server/megajs", megajsRouter)
 app.use("/server/sesion", sesionRouter)
 

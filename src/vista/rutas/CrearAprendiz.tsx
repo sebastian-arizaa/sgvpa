@@ -14,7 +14,6 @@ export function CrearAprendiz() {
   const [mensajeErrorBD, setMensajeErrorBD] = useState<string | null>("")
   const [formacionEncontrada, setFormacionEncontrada] = useState<FormacionType | null>(null)
   const [exiteFormacion, setExiteFormacion] = useState(false)
-  console.log("🚀 ~ CrearAprendiz ~ exiteFormacion:", exiteFormacion)
   const { register, handleSubmit, formState: { errors }, watch, reset, setError, clearErrors, setValue } = useForm()
 
 
@@ -25,7 +24,7 @@ export function CrearAprendiz() {
   const onSubmit = handleSubmit(async (formData) => {
     try {
       console.log("🚀 ~ onSubmit ~ formData:", formData)
-      const salt = generarSalt()
+      const salt = await generarSalt()
       const hash_contraseña = await hashContraseña(formData.contraseña, salt)
 
       if (!hash_contraseña) return console.log("No hay has Contraseña")
@@ -48,8 +47,19 @@ export function CrearAprendiz() {
         id: 0
       }
 
+      const actaId = aprendiz.id + "-" + aprendiz.formacion_actual_id
+
+      const actaData = {
+        aprendizId: aprendiz.id,
+        formacionId: aprendiz.formacion_actual_id,
+        actasId: [actaId + "-1", actaId + "-2", actaId + "-3"],
+        nombre_directorio: actaId
+      }
+
       await appAxios.post("/server/aprendices/uno", aprendiz)
       await appAxios.post("/server/aprendices-formaciones/uno", aprendicesFormaciones)
+      await appAxios.post("/server/actas/todas-por-aprendiz", actaData)
+
       reset({
         nombre: "",
         apellidos: "",
@@ -91,7 +101,7 @@ export function CrearAprendiz() {
         clearErrors("numeroFichaActual")
       } catch (error: any) {
         setError("numeroFichaActual", { message: "No existe esa formación con ese número de identificación", type: "validate" }, { shouldFocus: true })
-        console.log("this the erorr: ", error)
+        console.log("Error: ", error)
       }
     }
   }

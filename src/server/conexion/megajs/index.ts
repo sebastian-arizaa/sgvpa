@@ -1,3 +1,9 @@
+import { webcrypto as nodeCrypto } from 'crypto';
+
+if (typeof globalThis.crypto === 'undefined') {
+  (globalThis as any).crypto = nodeCrypto;
+}
+
 import { Storage } from "megajs"
 import { dotenvConfig } from "../../dotenv";
 

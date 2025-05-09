@@ -2,7 +2,7 @@ import { HashRouter, Route, Routes } from "react-router-dom"
 import { Footer } from "./componentes/Footer"
 import { Navbar } from "./componentes/Navbar"
 import { Ingresar } from "./rutas/Ingresar"
-import { ProteccionSession } from "./componentes/ProtegerRuta"
+// import { ProteccionSession } from "./componentes/ProtegerRuta"
 import { appAxios } from "../utils/axios"
 import { useEffect, useState } from "react"
 import { JwtPayloadType } from "../types"
@@ -25,7 +25,7 @@ import { MisActas } from "./rutas/MisActas"
 
 function App() {
   const [sesionValue, setSesionValue] = useState<JwtPayloadType>({ userData: null, userTipo: null })
-  const [cargando, setCargando] = useState(true)
+  // const [cargando, setCargando] = useState(true)
 
   useEffect(() => {
     const auth = async () => {
@@ -33,11 +33,11 @@ function App() {
         const { data } = await appAxios.get<JwtPayloadType>("/server/sesion/ingresar")
         if (data.userTipo) {
           setSesionValue(data)
-          setCargando(false)
+          // setCargando(false)
         }
       } catch (error) {
         console.log(error)
-        setCargando(false)
+        // setCargando(false)
         // location.hash = "#/ingresar"
       }
     }
