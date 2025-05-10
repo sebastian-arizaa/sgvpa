@@ -25,7 +25,7 @@ export function Formaciones() {
   const onClick = handleSubmit((data) => {
     const newSearchParams = new URLSearchParams(searchParams.toString())
     if (data.tipoFiltro === "Por Nombre") {
-      setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.nombre.toLowerCase().includes(data.datoFiltro)))
+      setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.nombre.toLowerCase().includes(data.datoFiltro.toLowerCase())))
       newSearchParams.set("tipoFiltro", "Por Nombre")
       newSearchParams.set("datoFiltro", data.datoFiltro)
       setSearchParams(newSearchParams)
@@ -106,7 +106,7 @@ export function Formaciones() {
   }, [formacionesFiltradas])
 
   return (
-    <div className="grow flex flex-col gap-4 w-full px-[20%]  max-sm:px-4">
+    <div className="grow flex flex-col gap-4 w-full px-[20%] max-lg:px-4">
       <Filtros
         register={register}
         inputButtonOnClick={onClick}

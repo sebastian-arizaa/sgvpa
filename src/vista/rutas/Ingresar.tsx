@@ -3,7 +3,6 @@ import { Button } from "../componentes/base/Button";
 import { Input } from "../componentes/base/Input";
 import { Title } from "../componentes/base/Title";
 import { appAxios } from "../../utils/axios";
-import { AxiosError } from "axios";
 import { JwtPayloadType } from "../../types";
 import { useContext, useEffect, useState } from "react";
 import { SessionContext } from "../context/SessionContext";
@@ -11,17 +10,17 @@ import { SessionContext } from "../context/SessionContext";
 export function Ingresar() {
   const { setSesionValue } = useContext(SessionContext)
   const { register, handleSubmit, formState: { errors }, watch } = useForm()
-  const [userError, setUserError] = useState(false)
+  const [userError, setUserError] = useState<string | null>(null)
 
   const onSubmit = handleSubmit(async (formData) => {
     try {
       const perfilRutaDB = formData.perfil.split("|")[0]
       const { data } = await appAxios.post<JwtPayloadType>(`/server/${perfilRutaDB}/ingresar`, { id: formData.numeroIdentificacion, contraseña: formData.contraseña })
       setSesionValue(data)
-    } catch (error) {
-      const axiosError: AxiosError = (error as AxiosError)
-      console.log(axiosError.response?.data)
-      setUserError(true)
+    } catch (error: any) {
+      console.log("🚀 ~ onSubmit ~ error:", error)
+      if (error.code === "ERR_NETWORK") return setUserError("Error en la conexion con el servidor")
+      setUserError("Número de identificación o contraseña incorrectos")
     }
   })
 
@@ -32,7 +31,7 @@ export function Ingresar() {
   }
 
   useEffect(() => {
-    setUserError(false)
+    setUserError(null)
   }, [watch().numeroIdentificacion, watch().contraseña])
 
   return (
@@ -110,7 +109,7 @@ export function Ingresar() {
         />
         {userError && (
           <div className="w-full">
-            <p className="text-red-500">Número de identificación o contraseña incorrectos</p>
+            <p className="text-red-500">{userError}</p>
           </div>
         )}
         <Button variante="primario">Ingresar</Button>

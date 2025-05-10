@@ -80,7 +80,7 @@ export function PerfilFormacion() {
         setFormacion(formacion)
         setValue("nombre", formacion.nombre)
         setValue("numeroFicha", formacion.id)
-        setValue("departamento", "Santander")
+        setValue("departamento", formacion.nombre_departamento)
         setValue("municipio", formacion.nombre_municipio)
       } catch (error: any) {
         console.log("Error: ", error)
@@ -141,7 +141,6 @@ export function PerfilFormacion() {
             label="Número ficha"
           />
           <Select
-            // defaultValue={formacion.nombre_departamento}
             disabled={!editando}
             requerido={editando ? true : null}
             name="departamento"
@@ -150,7 +149,6 @@ export function PerfilFormacion() {
             label="Departamento"
           />
           <Select
-            // defaultValue={formacion.nombre_municipio}
             disabled={!editando}
             requerido={editando ? true : null}
             name="municipio"
