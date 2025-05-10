@@ -24,12 +24,12 @@ export function Instructores() {
   const onClick = handleSubmit((data) => {
     const newSearchParams = new URLSearchParams(searchParams.toString())
     if (data.tipoFiltro === "Por Nombre") {
-      setInstructoresfiltrados(instructores.filter(instructores => (instructores.nombre.toLowerCase() + " " + instructores.apellidos.toLowerCase()).includes(data.datoFiltro.toLowerCase())))
+      setInstructoresfiltrados(instructores.filter(instructores => (instructores.nombre.toLowerCase() + " " + instructores.apellidos.toLowerCase()).includes(data.datoFiltro.toLowerCase().trim())))
       newSearchParams.set("tipoFiltro", "Por Nombre")
       newSearchParams.set("datoFiltro", data.datoFiltro)
       setSearchParams(newSearchParams)
     } else {
-      setInstructoresfiltrados(instructores.filter(instructores => instructores.id.toLowerCase().includes(data.datoFiltro)))
+      setInstructoresfiltrados(instructores.filter(instructores => instructores.id.toLowerCase().includes(data.datoFiltro.trim())))
       newSearchParams.set("tipoFiltro", "Por N. Identificación")
       newSearchParams.set("datoFiltro", data.datoFiltro)
       setSearchParams(newSearchParams)
@@ -86,16 +86,14 @@ export function Instructores() {
   }, [])
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ instructoresfiltrados:", instructoresfiltrados)
     if (instructoresfiltrados.length) {
-      console.log("🚀 ~ useEffect ~ renderizoPorParamentros:", renderizoPorParamentros)
       const tipoFiltro = searchParams.get("tipoFiltro")
       const datoFiltro = searchParams.get("datoFiltro")
       if (!tipoFiltro) return
       if (!datoFiltro) return
       if (renderizoPorParamentros) return
       if (tipoFiltro === "Por Nombre") {
-        setInstructoresfiltrados(instructores.filter(instructores => instructores.nombre.toLowerCase().includes(datoFiltro)))
+        setInstructoresfiltrados(instructores.filter(instructores => (instructores.nombre.toLowerCase() + " " + instructores.apellidos.toLowerCase()).includes(datoFiltro.toLowerCase().trim())))
       } else {
         setInstructoresfiltrados(instructores.filter(instructores => instructores.id.toLowerCase().includes(datoFiltro)))
       }

@@ -5,7 +5,7 @@ import { appAxios } from "../../utils/axios";
 import { Subtitle } from "./base/Subtitle";
 import { Input } from "./base/Input";
 import { useForm } from "react-hook-form";
-import { ActaType } from "../../types";
+import { ActaType, AprendizType } from "../../types";
 import { SessionContext } from "../context/SessionContext";
 
 interface Props {
@@ -17,6 +17,7 @@ export function Actas({ aprendizId }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [actaAbierta, setActaAbierta] = useState(false)
   const [actaData, setActaData] = useState<ActaType | null>(null)
+  const [aprendiz, setAprendiz] = useState<AprendizType | null>(null)
   const [archivoSubido, setArchivoSubido] = useState<File | null>(null)
   const [archivoSubidoError, setArchivoSubidoError] = useState<{ mensaje: string } | null>(null)
   const [respuestaBD, setRespuestaBD] = useState<string | null>(null)
@@ -155,6 +156,7 @@ export function Actas({ aprendizId }: Props) {
       setCargando(false)
     } catch (error: any) {
       console.log("Error: ", error)
+      if (error.status == 404) setRespuestaBD("Archivo no encontrado")
       setCargando(false)
     }
   }
@@ -230,9 +232,20 @@ export function Actas({ aprendizId }: Props) {
       const conseguirActas = async () => {
         const { data } = await appAxios.get<ActaType[]>(`/server/actas/todas-por-aprendiz/${aprendizId}`)
         setActas(data)
-        console.log("🚀 ~ conseguirActas ~ data:", data)
       }
       conseguirActas()
+    } catch (error: any) {
+      console.log("Error: ", error)
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      const conseguirAprendiz = async () => {
+        const { data } = await appAxios.get<AprendizType>(`/server/aprendices/uno/${aprendizId}`)
+        setAprendiz(data)
+      }
+      conseguirAprendiz()
     } catch (error: any) {
       console.log("Error: ", error)
     }
@@ -266,7 +279,7 @@ export function Actas({ aprendizId }: Props) {
 
   return (
     <div className="relative grow flex flex-col justify-center gap-4 w-full px-[20%] max-sm:px-4">
-      <Title variante="lineaAbajo" tamaño="grande">Actas</Title>
+      <Title variante="lineaAbajo" tamaño="grande">{userTipo == "aprendiz" ? "Mis Actas" : `Actas - ${aprendiz?.nombre} ${aprendiz?.apellidos}`}</Title>
       <div className="w-full flex flex-col gap-4">
         {actas && actas.map((acta) => (
           <div
@@ -326,7 +339,7 @@ export function Actas({ aprendizId }: Props) {
                   </>
                 )}
                 {archivoSubido && <p className="text-sm font-semibold text-center">Archivo: {archivoSubido.name}</p>}
-                {archivoSubidoError && <p className="text-sm text-red-500">{archivoSubidoError.mensaje}</p>}
+                {archivoSubidoError && <p className="w-full text-center text-sm text-red-500">{archivoSubidoError.mensaje}</p>}
                 {(((!archivoSubido && actaData.nombre_archivo !== null) || (userTipo !== "aprendiz" && !archivoSubido)) || (archivoSubidoError && archivoSubido)) && (
                   <>
                     <label

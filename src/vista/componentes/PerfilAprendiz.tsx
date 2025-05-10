@@ -220,7 +220,7 @@ export function PerfilAprendiz({ aprendizData }: Props) {
             errors={errors}
             label="Número identificación"
           />
-          {userTipo == "admin" && (
+          {userTipo !== "aprendiz" && (
             <Input
               disabled={!editando}
               name="numeroFichaActual"
@@ -252,7 +252,7 @@ export function PerfilAprendiz({ aprendizData }: Props) {
               label="Número ficha actual"
             />
           )}
-          {formacionEncontrada && userTipo == "admin" && <p className="w-full text-sm font-light">{formacionEncontrada.nombre} - {formacionEncontrada.nombre_municipio}</p>}
+          {((formacionEncontrada && !editando) || (formacionEncontrada && userTipo === "admin")) && <p className="w-full text-sm font-light">{formacionEncontrada.nombre} - {formacionEncontrada.nombre_municipio}</p>}
           {editando && !cambiandoContraseña && userTipo === "aprendiz" && <Button onClick={(e) => { e.preventDefault; setCambiandoContraseña(true) }} variante="peligro">Cambiar Contraseña</Button>}
           {editando && cambiandoContraseña && userTipo === "aprendiz" && <Button onClick={(e) => { e.preventDefault; setCambiandoContraseña(false) }} variante="peligro">Cancelar Cambiar contraseña</Button>}
           {editando && cambiandoContraseña && userTipo === "aprendiz" && (
@@ -343,7 +343,7 @@ export function PerfilAprendiz({ aprendizData }: Props) {
 
           </div>
           {mensajeErrorBD && <p className="w-full text-red-500">{mensajeErrorBD}</p>}
-          {!editando && (
+          {(userTipo === "admin" || userTipo === "aprendiz") && !editando && (
             <div className="flex gap-2 w-full mt-4">
               <Button onClick={(e) => { e.preventDefault; setEditando(true) }} variante="primario">Editar</Button>
               {userTipo === "admin" && <Button onClick={eliminarAprendiz} variante="peligro">Eliminar</Button>}

@@ -6,9 +6,10 @@ interface Props {
   children?: React.ReactNode;
   retornaConSession: boolean;
   cargando?: boolean;
+  retornaConUsers?: string
 }
 
-export function ProteccionSession({ children, retornaConSession, cargando }: Props) {
+export function ProteccionSession({ children, retornaConSession, cargando, retornaConUsers }: Props) {
   const location = useLocation();
   console.log("🚀 ~ ProteccionSession ~ location:", location)
   const { userTipo } = useContext(SessionContext)
@@ -16,18 +17,21 @@ export function ProteccionSession({ children, retornaConSession, cargando }: Pro
   if (!cargando) {
     if (retornaConSession) {
       if (userTipo) {
-        return <>{children}</>
+        if (!retornaConUsers) return <Navigate to="/ingresar" state={{ from: location }} replace />
+        if (retornaConUsers.includes(userTipo)) {
+          return <>{children}</>
+        }
       }
       return <Navigate to="/ingresar" state={{ from: location }} replace />
     } else {
       if (userTipo) {
         switch (userTipo) {
           case "admin":
-            return <Navigate to="/aprendices" state={{ from: location }} replace />
+            return <Navigate to="/instructores" state={{ from: location }} replace />
           case "instructor":
-            return <Navigate to="/aprendices" state={{ from: location }} replace />
+            return <Navigate to="/mis-aprendices" state={{ from: location }} replace />
           case "aprendiz":
-            return <Navigate to="/actas" state={{ from: location }} replace />
+            return <Navigate to="/mis-actas" state={{ from: location }} replace />
         }
       }
       return <>{children}</>

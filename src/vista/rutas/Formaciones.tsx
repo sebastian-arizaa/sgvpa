@@ -25,7 +25,7 @@ export function Formaciones() {
   const onClick = handleSubmit((data) => {
     const newSearchParams = new URLSearchParams(searchParams.toString())
     if (data.tipoFiltro === "Por Nombre") {
-      setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.nombre.toLowerCase().includes(data.datoFiltro.toLowerCase())))
+      setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.nombre.toLowerCase().includes(data.datoFiltro.toLowerCase().trim())))
       newSearchParams.set("tipoFiltro", "Por Nombre")
       newSearchParams.set("datoFiltro", data.datoFiltro)
       setSearchParams(newSearchParams)
@@ -96,7 +96,7 @@ export function Formaciones() {
       if (!datoFiltro) return
       if (renderizoPorParamentros) return
       if (tipoFiltro === "Por Nombre") {
-        setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.nombre.toLowerCase().includes(datoFiltro)))
+        setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.nombre.toLowerCase().includes(datoFiltro.toLowerCase())))
       } else {
         setFormacionesFiltradas(formaciones.filter(formaciones => formaciones.id.toLowerCase().includes(datoFiltro)))
       }

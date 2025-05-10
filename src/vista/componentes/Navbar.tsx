@@ -40,7 +40,7 @@ export function Navbar() {
   }
 
   return (
-    <header className="w-full px-8 shadow-sm min-h-12 max-sm:px-4">
+    <header className="w-full px-8 shadow-sm min-h-12 max-lg:px-4">
       <nav className="flex gap-4 min-h-12">
         <ul className="flex justify-between gap-4 w-full min-h-12">
           <div className="flex items-center gap-4">
@@ -77,7 +77,7 @@ export function Navbar() {
             <ul className="flex flex-col gap-4 p-4 w-full h-1/2 mt-2 bg-white">
               {userTipo !== "admin" && (<li key={"MiPerfli"}>
                 <NavLink
-                  // onClick={link.onClick}
+                  onClick={() => { setMenuAbierto(false) }}
                   className={({ isActive }) => isActive ? `${estilosBaseNavLink} border-green-500!` : estilosBaseNavLink + " border-b-gray-200"}
                   to="/miperfil"
                 >Mi Perfil</NavLink>

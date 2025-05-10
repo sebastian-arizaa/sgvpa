@@ -88,8 +88,8 @@ export function PerfilInstructor({ instructorData }: Props) {
     reset({
       nombre: instructor.nombre,
       apellidos: instructor.apellidos,
-      email: instructor.email,
-      telefono: instructor.telefono,
+      email: instructor.email || '',
+      telefono: instructor.telefono || '',
       numeroIdentificacion: instructor.id,
     })
   }

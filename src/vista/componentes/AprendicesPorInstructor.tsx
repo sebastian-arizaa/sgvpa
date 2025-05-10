@@ -24,7 +24,7 @@ export function AprendicesPorInstructor({ instructorId }: Props) {
   const onClick = handleSubmit((data) => {
     const newSearchParams = new URLSearchParams(searchParams.toString())
     if (data.tipoFiltro === "Por Nombre") {
-      setAprendicesFiltrados(aprendices.filter(aprendices => (aprendices.nombre.toLowerCase() + " " + aprendices.apellidos.toLowerCase()).includes(data.datoFiltro)))
+      setAprendicesFiltrados(aprendices.filter(aprendices => (aprendices.nombre.toLowerCase() + " " + aprendices.apellidos.toLowerCase()).includes(data.datoFiltro.toLowerCase().trim())))
       newSearchParams.set("tipoFiltro", "Por Nombre")
       newSearchParams.set("datoFiltro", data.datoFiltro)
       setSearchParams(newSearchParams)

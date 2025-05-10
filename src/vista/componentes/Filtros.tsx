@@ -3,6 +3,8 @@ import { Input } from "./base/Input";
 import { Select } from "./base/Select";
 import { Button } from "./base/Button";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { SessionContext } from "../context/SessionContext";
 
 interface Props {
   register: UseFormRegister<any>;
@@ -13,6 +15,7 @@ interface Props {
 }
 
 export function Filtros({ register, selectValues, inputButtonOnClick, crearRuta, crearButtonNombre }: Props) {
+  const { userTipo } = useContext(SessionContext)
   const navigation = useNavigate()
 
   return (
@@ -27,7 +30,7 @@ export function Filtros({ register, selectValues, inputButtonOnClick, crearRuta,
           />
           <span className="ml-2  text-lg">:</span>
         </div>
-        <div className="w-[70%]">
+        <div className={userTipo == "admin" ? "w-[70%]" : "w-[80%]"}>
           <Input
             name="datoFiltro"
             register={register}
@@ -36,7 +39,7 @@ export function Filtros({ register, selectValues, inputButtonOnClick, crearRuta,
           />
         </div>
       </div>
-      {crearButtonNombre && (
+      {userTipo == "admin" && crearButtonNombre && (
         <div className="max-sm:w-full">
           <Button onClick={() => navigation(crearRuta || '/')} variante="primario" className="w-max max-sm:w-full">{crearButtonNombre}</Button>
         </div>
