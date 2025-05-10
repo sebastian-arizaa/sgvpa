@@ -325,7 +325,9 @@ export function Actas({ aprendizId }: Props) {
                     {userTipo === "aprendiz" && <p className="w-full text-center text-sm">4: Solo se puede subir una vez el acta, en caso de haber subido la acta incorrecta, comunicarse con su instructor asignado y solicitar el habilitamiento de la acta para subir la acta correspondiente.</p>}
                   </>
                 )}
-                {((!archivoSubido && !archivoSubidoError && actaData.nombre_archivo !== null) || (userTipo !== "aprendiz" && !archivoSubido)) && (
+                {archivoSubido && <p className="text-sm font-semibold text-center">Archivo: {archivoSubido.name}</p>}
+                {archivoSubidoError && <p className="text-sm text-red-500">{archivoSubidoError.mensaje}</p>}
+                {(((!archivoSubido && actaData.nombre_archivo !== null) || (userTipo !== "aprendiz" && !archivoSubido)) || (archivoSubidoError && archivoSubido)) && (
                   <>
                     <label
                       htmlFor="actaArchivo"
@@ -334,8 +336,7 @@ export function Actas({ aprendizId }: Props) {
                   </>
                 )}
                 <input ref={inputRef} onInput={inputFileOnchange} className="hidden" id="actaArchivo" type="file" />
-                {archivoSubido && <p className="text-sm font-semibold text-center">Archivo: {archivoSubido.name}</p>}
-                {archivoSubidoError && <p className="text-sm text-red-500">{archivoSubidoError.mensaje}</p>}
+
                 {archivoSubido && !archivoSubidoError && (
                   <>
                     <p className="text-center text-sm font-semibold">Como se guardará: {actaData.nombre}{userTipo === "aprendiz" ? "(firmada)" : ""}.{conseguirExtension(archivoSubido.name)}</p>
