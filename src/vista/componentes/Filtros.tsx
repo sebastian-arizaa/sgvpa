@@ -18,16 +18,16 @@ export function Filtros({ register, selectValues, inputButtonOnClick, crearRuta,
   return (
     <div className="flex justify-between items-center pt-4 max-sm:flex-col  max-sm:gap-4">
       <div className="w-full flex items-center gap-2">
-        <div className="flex items-center max-w-96">
+        <div className="flex items-center w-[20%] max-w-96 max-sm:w-[30%]">
           <Select
             name="tipoFiltro"
             register={register}
-            className="h-9  max-sm:w-4"
+            className="h-9 w-full! max-sm:w-4"
             values={selectValues}
           />
           <span className="ml-2  text-lg">:</span>
         </div>
-        <div className="max-w-96">
+        <div className="w-[70%]">
           <Input
             name="datoFiltro"
             register={register}

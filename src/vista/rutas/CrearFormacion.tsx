@@ -6,11 +6,15 @@ import { Select } from "../componentes/base/Select";
 import { useEffect, useState } from "react";
 import { FormacionType } from "../../types";
 import { appAxios } from "../../utils/axios";
+import { useFetchDepartamentos } from "../hooks/useFetchDepartamentos";
+import { useFetchMunicipios } from "../hooks/useFetchMunicipios";
 
 export function CrearFormacion() {
   // const [cargando, setCargando] = useState(true)
   const [mensajeErrorBD, setMensajeErrorBD] = useState<string | null>("")
   const { register, handleSubmit, formState: { errors }, watch, reset } = useForm()
+  const [departamentos] = useFetchDepartamentos()
+  const { municipios } = useFetchMunicipios({ departamentoActual: watch().departamento })
 
   const onSubmit = handleSubmit(async (formData) => {
     try {
@@ -96,7 +100,7 @@ export function CrearFormacion() {
           defaultValue={""}
           requerido={true}
           name="departamento"
-          values={["", "Santander", "Boyaca", "Cundinamarca", "Antioquia"]}
+          values={[...departamentos, '']}
           register={register}
           rules={{
             validate: (value) => {
@@ -112,7 +116,7 @@ export function CrearFormacion() {
           defaultValue={""}
           requerido={true}
           name="municipio"
-          values={["", "Barbosa", "Veléz", "Puente Nacional", "Bucaramanga"]}
+          values={[...municipios, ""]}
           register={register}
           rules={{
             validate: (value) => {

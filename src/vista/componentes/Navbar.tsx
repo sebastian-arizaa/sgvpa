@@ -20,21 +20,21 @@ export function Navbar() {
   switch (userTipo) {
     case "admin":
       links = [
-        { to: "/instructores", text: "Instructores" },
-        { to: "/formaciones", text: "Formaciones" },
-        { to: "/ingresar", text: "Cerrar Sesion", onClick: () => { appAxios.get("/server/sesion/salir"); setSesionValue({ userTipo: null, userData: null }) } }
+        { to: "/instructores", text: "Instructores", onClick: () => { setMenuAbierto(false) } },
+        { to: "/formaciones", text: "Formaciones", onClick: () => { setMenuAbierto(false) } },
+        { to: "/ingresar", text: "Cerrar Sesion", onClick: () => { appAxios.get("/server/sesion/salir"); setSesionValue({ userTipo: null, userData: null }); setMenuAbierto(false) } }
       ]
       break;
     case "instructor":
       links = [
-        { to: "/mis-aprendices", text: "Mis aprendices" },
-        { to: "/ingresar", text: "Cerrar Sesion", onClick: () => { appAxios.get("/server/sesion/salir"); setSesionValue({ userTipo: null, userData: null }) } }
+        { to: "/mis-aprendices", text: "Mis aprendices", onClick: () => { setMenuAbierto(false) } },
+        { to: "/ingresar", text: "Cerrar Sesion", onClick: () => { appAxios.get("/server/sesion/salir"); setSesionValue({ userTipo: null, userData: null }); setMenuAbierto(false) } }
       ]
       break;
     case "aprendiz":
       links = [
-        { to: "/mis-actas", text: "Mis Actas" },
-        { to: "/ingresar", text: "Cerrar Sesion", onClick: () => { appAxios.get("/server/sesion/salir"); setSesionValue({ userTipo: null, userData: null }) } }
+        { to: "/mis-actas", text: "Mis Actas", onClick: () => { setMenuAbierto(false) } },
+        { to: "/ingresar", text: "Cerrar Sesion", onClick: () => { appAxios.get("/server/sesion/salir"); setSesionValue({ userTipo: null, userData: null }); setMenuAbierto(false) } }
       ]
       break;
   }
@@ -61,7 +61,7 @@ export function Navbar() {
             ))}
           </div>
           {userTipo != "admin" && userTipo != null && (
-            <div className="flex gap-4">
+            <div className="flex gap-4 max-sm:hidden">
               <li>
                 <NavLink
                   className="flex items-center justify-center h-12 w-12 border-green-200 bg-green-500 text-white font-semibold cursor-pointer"
@@ -73,17 +73,25 @@ export function Navbar() {
         </ul>
         {userTipo && <div onClick={() => setMenuAbierto(!menuAbierto)} className="hidden items-center cursor-pointer max-sm:flex"><IoMdMenu className="h-10 w-10 text-green-500" /></div>}
         {menuAbierto && (
-          <div className="absolute z-10 top-14 left-0 w-full bg-black/80 h-screen peer-active:block ">
+          <div className="absolute z-10 top-14 left-0 w-full bg-black/80 h-screen min-sm:hidden">
             <ul className="flex flex-col gap-4 p-4 w-full h-1/2 mt-2 bg-white">
+              {userTipo !== "admin" && (<li key={"MiPerfli"}>
+                <NavLink
+                  // onClick={link.onClick}
+                  className={({ isActive }) => isActive ? `${estilosBaseNavLink} border-green-500!` : estilosBaseNavLink + " border-b-gray-200"}
+                  to="/miperfil"
+                >Mi Perfil</NavLink>
+              </li>)}
               {links.map(link => (
                 <li key={link.text}>
                   <NavLink
                     onClick={link.onClick}
-                    className={({ isActive }) => isActive ? `${estilosBaseNavLink} border-green-500!` : estilosBaseNavLink}
+                    className={({ isActive }) => isActive ? `${estilosBaseNavLink} border-green-500!` : estilosBaseNavLink + " border-b-gray-200"}
                     to={link.to}
                   >{link.text}</NavLink>
                 </li>
               ))}
+
             </ul>
           </div>
         )}

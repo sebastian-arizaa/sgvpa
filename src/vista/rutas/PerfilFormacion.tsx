@@ -7,6 +7,8 @@ import { FormacionType } from "../../types";
 import { Select } from "../componentes/base/Select";
 import { useNavigate, useParams } from "react-router-dom";
 import { appAxios } from "../../utils/axios";
+import { useFetchDepartamentos } from "../hooks/useFetchDepartamentos";
+import { useFetchMunicipios } from "../hooks/useFetchMunicipios";
 
 export function PerfilFormacion() {
   const { id } = useParams()
@@ -21,6 +23,9 @@ export function PerfilFormacion() {
   // const [cargando, setCargando] = useState(true)
   const [mensajeErrorBD, setMensajeErrorBD] = useState<string | null>("")
   const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm()
+  const [departamentos] = useFetchDepartamentos()
+  const { municipios } = useFetchMunicipios({ departamentoActual: watch().departamento })
+  console.log("🚀 ~ PerfilFormacion ~ municipios:", municipios)
 
   const onSubmit = handleSubmit(async (formData) => {
     try {
@@ -75,14 +80,14 @@ export function PerfilFormacion() {
         setFormacion(formacion)
         setValue("nombre", formacion.nombre)
         setValue("numeroFicha", formacion.id)
-        setValue("departamento", formacion.nombre_departamento)
+        setValue("departamento", "Santander")
         setValue("municipio", formacion.nombre_municipio)
       } catch (error: any) {
         console.log("Error: ", error)
       }
     }
     conseguirInstructor()
-  }, [id])
+  }, [id, departamentos])
 
   useEffect(() => {
     setMensajeErrorBD(null)
@@ -136,18 +141,20 @@ export function PerfilFormacion() {
             label="Número ficha"
           />
           <Select
+            // defaultValue={formacion.nombre_departamento}
             disabled={!editando}
             requerido={editando ? true : null}
             name="departamento"
-            values={["Santander", "Boyaca", "Cundinamarca", "Antioquia"]}
+            values={[...departamentos]}
             register={register}
             label="Departamento"
           />
           <Select
+            // defaultValue={formacion.nombre_municipio}
             disabled={!editando}
             requerido={editando ? true : null}
             name="municipio"
-            values={["Barbosa", "Veléz", "Puente Nacional", "Bucaramanga"]}
+            values={[...municipios]}
             register={register}
             label="Municipio"
           />

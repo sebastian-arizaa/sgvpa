@@ -285,7 +285,7 @@ export function Actas({ aprendizId }: Props) {
         ))}
       </div>
       {actaAbierta && (
-        <div className="absolute top-0 left-0 w-full h-screen flex justify-center items-center bg-black/60 max-sm:p-4">
+        <div className="absolute top-1 left-0 w-full h-screen flex justify-center items-center bg-black/60 max-sm:p-4">
           <div className="relative flex flex-col items-center gap-4 w-1/2 h-1/2 overflow-y-auto max-w-[600px] px-4 py-8 bg-white max-sm:w-full">
             {true && actaData?.estado === "Disponible" ? (
               <>
