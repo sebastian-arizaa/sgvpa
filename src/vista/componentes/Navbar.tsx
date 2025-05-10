@@ -1,10 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { appAxios } from "../../utils/axios";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { SessionContext } from "../context/SessionContext";
+import { IoMdMenu } from "react-icons/io";
 
 export function Navbar() {
   const { setSesionValue, userTipo, userData } = useContext(SessionContext)
+  const [menuAbierto, setMenuAbierto] = useState(false)
   const estilosBaseNavLink = "flex items-center h-12 px-2 border-b-2 border-transparent hover:border-green-500"
 
   let letraPerfil = ""
@@ -38,7 +40,7 @@ export function Navbar() {
   }
 
   return (
-    <header className="w-full px-8 shadow-sm min-h-12">
+    <header className="w-full px-8 shadow-sm min-h-12 max-sm:px-4">
       <nav className="flex gap-4 min-h-12">
         <ul className="flex justify-between gap-4 w-full min-h-12">
           <div className="flex items-center gap-4">
@@ -52,7 +54,7 @@ export function Navbar() {
               <li key={link.text}>
                 <NavLink
                   onClick={link.onClick}
-                  className={({ isActive }) => isActive ? `${estilosBaseNavLink} border-green-500!` : estilosBaseNavLink}
+                  className={({ isActive }) => isActive ? `${estilosBaseNavLink} border-green-500! max-sm:hidden` : estilosBaseNavLink + " max-sm:hidden"}
                   to={link.to}
                 >{link.text}</NavLink>
               </li>
@@ -69,6 +71,22 @@ export function Navbar() {
             </div>
           )}
         </ul>
+        {userTipo && <div onClick={() => setMenuAbierto(!menuAbierto)} className="hidden items-center cursor-pointer max-sm:flex"><IoMdMenu className="h-10 w-10 text-green-500" /></div>}
+        {menuAbierto && (
+          <div className="absolute z-10 top-14 left-0 w-full bg-black/80 h-screen peer-active:block ">
+            <ul className="flex flex-col gap-4 p-4 w-full h-1/2 mt-2 bg-white">
+              {links.map(link => (
+                <li key={link.text}>
+                  <NavLink
+                    onClick={link.onClick}
+                    className={({ isActive }) => isActive ? `${estilosBaseNavLink} border-green-500!` : estilosBaseNavLink}
+                    to={link.to}
+                  >{link.text}</NavLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </nav>
     </header>
   )

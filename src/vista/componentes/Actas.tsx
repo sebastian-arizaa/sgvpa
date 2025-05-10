@@ -265,7 +265,7 @@ export function Actas({ aprendizId }: Props) {
   }, [actas, actaData])
 
   return (
-    <div className="relative grow flex flex-col justify-center gap-4 w-full px-[20%]">
+    <div className="relative grow flex flex-col justify-center gap-4 w-full px-[20%] max-sm:px-4">
       <Title variante="lineaAbajo" tamaño="grande">Actas</Title>
       <div className="w-full flex flex-col gap-4">
         {actas && actas.map((acta) => (
@@ -285,8 +285,8 @@ export function Actas({ aprendizId }: Props) {
         ))}
       </div>
       {actaAbierta && (
-        <div className="absolute top-0 left-0 w-full h-screen flex justify-center items-center bg-black/60">
-          <div className="relative flex flex-col items-center gap-4 w-1/2 h-1/2 overflow-y-auto max-w-[600px] px-4 py-8 bg-white">
+        <div className="absolute top-0 left-0 w-full h-screen flex justify-center items-center bg-black/60 max-sm:p-4">
+          <div className="relative flex flex-col items-center gap-4 w-1/2 h-1/2 overflow-y-auto max-w-[600px] px-4 py-8 bg-white max-sm:w-full">
             {true && actaData?.estado === "Disponible" ? (
               <>
                 <div className="w-full">
@@ -295,8 +295,8 @@ export function Actas({ aprendizId }: Props) {
 
                 {actaData.nombre_archivo ? (
                   <>
-                    <p className="font-semibold">Nombre actual: {actaData.nombre_archivo}</p>
-                    <div className="w-full flex gap-4">
+                    <p className="text-center font-semibold">Nombre actual: {actaData.nombre_archivo}</p>
+                    <div className="w-full flex gap-4 max-sm:flex-col">
                       <Button onClick={descargarActa} variante="primario">Descargar Acta</Button>
                       {userTipo !== "aprendiz" && (
                         <>
@@ -338,7 +338,7 @@ export function Actas({ aprendizId }: Props) {
                 {archivoSubidoError && <p className="text-sm text-red-500">{archivoSubidoError.mensaje}</p>}
                 {archivoSubido && !archivoSubidoError && (
                   <>
-                    <p className="text-sm font-semibold">Como se guardará: {actaData.nombre}{userTipo === "aprendiz" ? "(firmada)" : ""}.{conseguirExtension(archivoSubido.name)}</p>
+                    <p className="text-center text-sm font-semibold">Como se guardará: {actaData.nombre}{userTipo === "aprendiz" ? "(firmada)" : ""}.{conseguirExtension(archivoSubido.name)}</p>
                     {archivoSubido && <Button onClick={subirActa} variante="primario">Subir Acta</Button>}
                   </>
                 )}
@@ -351,7 +351,7 @@ export function Actas({ aprendizId }: Props) {
                 </div>
                 {(Boolean(actaData?.cerrada) && actaData?.nombre_archivo && userTipo !== "aprendiz") && (
                   <>
-                    <p className="font-semibold">Nombre actual : {actaData.nombre_archivo}</p>
+                    <p className="text-center font-semibold">Nombre actual : {actaData.nombre_archivo}</p>
                     <div className="w-full flex gap-4">
                       <Button onClick={descargarActa} variante="primario">Descargar Acta</Button>
                     </div>
@@ -378,7 +378,7 @@ export function Actas({ aprendizId }: Props) {
                 {userTipo != "aprendiz" && <Button onClick={!habilitandoActa ? () => setHabilitandoActa(true) : habilitarActa} variante="primario">Habilitar Acta</Button>}
               </>
             )}
-            {respuestaBD && (<p>{respuestaBD}</p>)}
+            {respuestaBD && (<p className="text-center">{respuestaBD}</p>)}
             <div className="absolute top-2 left-2 w-8 h-8">
               <Button className="h-full" onClick={salirActa} variante="peligro">X</Button>
             </div>

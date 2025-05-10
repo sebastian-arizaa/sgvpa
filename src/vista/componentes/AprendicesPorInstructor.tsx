@@ -129,7 +129,7 @@ export function AprendicesPorInstructor({ instructorId }: Props) {
     )
   } else {
     return (
-      <div className="grow flex flex-col gap-4 w-full px-[20%]">
+      <div className="grow flex flex-col gap-4 w-full px-[20%] max-sm:px-4">
         <Filtros
           register={register}
           inputButtonOnClick={onClick}

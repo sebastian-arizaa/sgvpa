@@ -54,7 +54,7 @@ export function Aprendices() {
         onClick={() => navigation(`/perfil/aprendiz/${aprendiz.id}`,)}
         className="flex gap-2 justify-between items-center shadow-md border-t-4 border-gray-200 p-2 cursor-pointer hover:bg-gray-200"
       >
-        <p>{aprendiz.nombre} {aprendiz.apellidos}</p>
+        <p className="max-sm:w-[70%]">{aprendiz.nombre} {aprendiz.apellidos}</p>
         <div>
           <Button
             onClick={(e) => {
@@ -127,7 +127,7 @@ export function Aprendices() {
     )
   } else {
     return (
-      <div className="grow flex flex-col gap-4 w-full px-[20%]">
+      <div className="grow flex flex-col gap-4 w-full px-[20%]  max-sm:px-4">
         <Filtros
           register={register}
           inputButtonOnClick={onClick}

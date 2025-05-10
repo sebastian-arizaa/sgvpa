@@ -96,7 +96,7 @@ export function PerfilFormacion() {
     )
   } else {
     return (
-      <div className="grow flex flex-col items-center justify-center gap-4 w-full px-[20%]">
+      <div className="grow flex flex-col items-center justify-center gap-4 w-full px-[20%] max-sm:px-4">
         <div className="w-full">
           <Title tamaño="grande" variante="lineaAbajo">Perfil Formación</Title>
         </div>

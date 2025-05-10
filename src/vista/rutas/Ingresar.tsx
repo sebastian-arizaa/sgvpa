@@ -36,7 +36,7 @@ export function Ingresar() {
   }, [watch().numeroIdentificacion, watch().contraseña])
 
   return (
-    <div className="grow flex flex-col items-center justify-center gap-4 w-full px-[20%]">
+    <div className="grow flex flex-col items-center justify-center gap-4 w-full px-[20%] max-sm:px-4">
       <div className="w-full">
         <Title variante="lineaAbajo" tamaño="grande">Ingresar</Title>
       </div>
@@ -51,7 +51,7 @@ export function Ingresar() {
             register={register}
             id="radioAdmin"
             label="Administrador"
-            labelClassName={`border-b-2 border-gray-300 pb-2 cursor-pointer hover:border-green-500 ${isChecked("admins|admin") ? " border-green-500" : ''}`}
+            labelClassName={`text-center border-b-2 border-gray-300 pb-2 cursor-pointer hover:border-green-500 ${isChecked("admins|admin") ? " border-green-500" : ''}`}
           />
           <Input
             className="hidden"
@@ -63,7 +63,7 @@ export function Ingresar() {
             register={register}
             id="radioInstructor"
             label="Instructor"
-            labelClassName={`border-b-2 border-gray-300 pb-2 cursor-pointer hover:border-green-500 ${isChecked("instructores|instructor") ? " border-green-500" : ''}`}
+            labelClassName={`text-center border-b-2 border-gray-300 pb-2 cursor-pointer hover:border-green-500 ${isChecked("instructores|instructor") ? " border-green-500" : ''}`}
           />
           <Input
             className="hidden"
@@ -74,7 +74,7 @@ export function Ingresar() {
             register={register}
             id="radioAprendiz"
             label="Aprendiz"
-            labelClassName={`border-b-2 border-gray-300 pb-2 cursor-pointer hover:border-green-500 ${isChecked("aprendices|aprendiz") ? " border-green-500" : ''}`}
+            labelClassName={`text-center border-b-2 border-gray-300 pb-2 cursor-pointer hover:border-green-500 ${isChecked("aprendices|aprendiz") ? " border-green-500" : ''}`}
           />
         </div>
         <Input
