@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { aprendices } from "../../modelo/bdMysql/aprendices";
 import { actualizarTokenAcceso, generaTokenAcceso } from "../../utils/jwt";
 import { ErrorBaseDatos, ErrorConflicto, ErrorNoEncontrado, ErrorViolacionLlaveForanea } from "../../errores/mysql";
+import { AprendicesInterface } from "../../types/modeloInterfaces";
 
 interface AprendicesControladorInterface {
+  aprendicesModelo: AprendicesInterface;
   conseguirTodos(req: Request, res: Response): Promise<void>;
   conseguirUno(req: Request, res: Response): Promise<void>;
   conseguirTodosPorInstructor(req: Request, res: Response): Promise<void>;
@@ -13,11 +14,15 @@ interface AprendicesControladorInterface {
   eliminar(req: Request, res: Response): Promise<void>;
 }
 
-class AprendicesControlador implements AprendicesControladorInterface {
+export class AprendicesControlador implements AprendicesControladorInterface {
+  aprendicesModelo: AprendicesInterface;
+  constructor(aprendicesModelo: AprendicesInterface) {
+    this.aprendicesModelo = aprendicesModelo
+  }
   async conseguirTodos(req: Request, res: Response): Promise<void> {
     if (req.sesion?.userTipo) {
       try {
-        const respuesta = await aprendices.conseguirTodos();
+        const respuesta = await this.aprendicesModelo.conseguirTodos();
         res.json(respuesta);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -31,7 +36,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const respuesta = await aprendices.conseguirUno(id);
+        const respuesta = await this.aprendicesModelo.conseguirUno(id);
         res.json(respuesta);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -46,7 +51,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const respuesta = await aprendices.conseguirTodosPorInstructor(id);
+        const respuesta = await this.aprendicesModelo.conseguirTodosPorInstructor(id);
         res.json(respuesta);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -61,7 +66,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const respuesta = await aprendices.conseguirTodosPorFormacion(id);
+        const respuesta = await this.aprendicesModelo.conseguirTodosPorFormacion(id);
         res.json(respuesta);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -75,7 +80,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
   async crear(req: Request, res: Response): Promise<void> {
     if (req.sesion?.userTipo) {
       try {
-        const respuesta = await aprendices.crear(req.body);
+        const respuesta = await this.aprendicesModelo.crear(req.body);
         res.json(respuesta);
       } catch (error: any) {
         console.log("Error: ", error.mensaje)
@@ -91,7 +96,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const respuesta = await aprendices.actualizar(id, req.body.data);
+        const respuesta = await this.aprendicesModelo.actualizar(id, req.body.data);
         if (req.body.actualizarToken) {
           actualizarTokenAcceso(res, { userTipo: "aprendiz", userData: req.body.data })
           res.json({ userTipo: "aprendiz", userData: req.body.data })
@@ -112,7 +117,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const respuesta = await aprendices.eliminar(id);
+        const respuesta = await this.aprendicesModelo.eliminar(id);
         res.json(respuesta);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -125,7 +130,7 @@ class AprendicesControlador implements AprendicesControladorInterface {
   async ingresar(req: Request, res: Response): Promise<void> {
     try {
       const { id, contraseña } = req.body;
-      const respuesta = await aprendices.conseguirUno(id);
+      const respuesta = await this.aprendicesModelo.conseguirUno(id);
       generaTokenAcceso(res, { userTipo: "aprendiz", userData: respuesta }, respuesta, contraseña)
     } catch (error: any) {
       console.log("Error: ", error)
@@ -133,5 +138,3 @@ class AprendicesControlador implements AprendicesControladorInterface {
     }
   }
 }
-
-export const aprendicesControlador = new AprendicesControlador();

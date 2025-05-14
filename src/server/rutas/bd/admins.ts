@@ -1,7 +1,12 @@
 import { Router } from "express";
-import { adminsControlador } from "../../../controlador/bd/admins";
+import { AdminsControlador } from "../../../controlador/bd/admins";
+import { AdminsInterface } from "../../../types/modeloInterfaces";
 
-export const adminRouter = Router();
+export const crearAdminsRouter = ({adminsModelo}: {adminsModelo: AdminsInterface}): Router => {
+  const adminsControlador = new AdminsControlador(adminsModelo)
+  const adminsRouter = Router();
+  adminsRouter.get("/uno/:id", adminsControlador.conseguirUno.bind(adminsControlador))
+  adminsRouter.post("/ingresar", adminsControlador.ingresar.bind(adminsControlador))
 
-adminRouter.get("/uno/:id", adminsControlador.conseguirUno)
-adminRouter.post("/ingresar", adminsControlador.ingresar)
+  return adminsRouter
+}

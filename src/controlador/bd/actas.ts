@@ -1,19 +1,25 @@
 import { Request, Response } from "express";
-import { actas } from "../../modelo/bdMysql/actas";
 import { ErrorBaseDatos } from "../../errores/mysql";
+import { ActasInterface } from "../../types/modeloInterfaces";
 
 interface ActasControladorInterface {
+  actaModelo: ActasInterface,
   conseguirTodasPorAprendiz(req: Request, res: Response): Promise<void>;
   agregarTodasPorAprendiz(req: Request, res: Response): Promise<void>;
   actualizarUna(req: Request, res: Response): Promise<void>;
 }
 
-class ActasControlador implements ActasControladorInterface {
+export class ActasControlador implements ActasControladorInterface {
+  actaModelo: ActasInterface;
+  constructor(actaModelo: ActasInterface) {
+    this.actaModelo = actaModelo
+  }
+
   async conseguirTodasPorAprendiz(req: Request, res: Response): Promise<void> {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const respuesta = await actas.conseguirTodasPorAprendiz(id)
+        const respuesta = await this.actaModelo.conseguirTodasPorAprendiz(id)
         res.json(respuesta)
       } catch (error: any) {
         console.log("Error: ", error)
@@ -27,7 +33,7 @@ class ActasControlador implements ActasControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { aprendizId, formacionId, actasId, nombre_directorio } = req.body;
-        const respuesta = await actas.agregarTodasPorAprendiz(aprendizId, formacionId, actasId, nombre_directorio);
+        const respuesta = await this.actaModelo.agregarTodasPorAprendiz(aprendizId, formacionId, actasId, nombre_directorio);
         res.json(respuesta)
       } catch (error: any) {
         console.log("Error: ", error)
@@ -41,7 +47,7 @@ class ActasControlador implements ActasControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params
-        const respuesta = await actas.actulizarUna(id, req.body);
+        const respuesta = await this.actaModelo.actulizarUna(id, req.body);
         res.json(respuesta)
       } catch (error: any) {
         console.log("Error: ", error)
@@ -53,4 +59,4 @@ class ActasControlador implements ActasControladorInterface {
   }
 }
 
-export const actasControlador = new ActasControlador();
+// export const actasControlador = new ActasControlador(actas);

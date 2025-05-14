@@ -1,10 +1,15 @@
 import { Router } from "express";
-import { aprendicesFormacionesControlador } from "../../../controlador/bd/aprendices_formaciones";
+import { AprendicesFormacionesInterface } from "../../../types/modeloInterfaces";
+import { AprendicesFormacionesControlador } from "../../../controlador/bd/aprendices_formaciones";
 
-export const aprendicesFormacionesRouter = Router();
-
-aprendicesFormacionesRouter.get("/todos", aprendicesFormacionesControlador.conseguirTodos);
-aprendicesFormacionesRouter.get("/uno/:id", aprendicesFormacionesControlador.conseguirUno);
-aprendicesFormacionesRouter.post("/uno", aprendicesFormacionesControlador.crear);
-aprendicesFormacionesRouter.put("/uno/:id", aprendicesFormacionesControlador.actualizar);
-aprendicesFormacionesRouter.delete("/uno/:id", aprendicesFormacionesControlador.eliminar);
+export const crearAprendicesFormacionesRouter = ({aprendicesFormacionesModelo}: {aprendicesFormacionesModelo: AprendicesFormacionesInterface}): Router => {
+  const aprendicesFormacionesControlador = new AprendicesFormacionesControlador(aprendicesFormacionesModelo)
+  const aprendicesFormacionesRouter = Router();
+  aprendicesFormacionesRouter.get("/todos", aprendicesFormacionesControlador.conseguirTodos.bind(aprendicesFormacionesControlador));
+  aprendicesFormacionesRouter.get("/uno/:id", aprendicesFormacionesControlador.conseguirUno.bind(aprendicesFormacionesControlador));
+  aprendicesFormacionesRouter.post("/uno", aprendicesFormacionesControlador.crear.bind(aprendicesFormacionesControlador));
+  aprendicesFormacionesRouter.put("/uno/:id", aprendicesFormacionesControlador.actualizar.bind(aprendicesFormacionesControlador));
+  aprendicesFormacionesRouter.delete("/uno/:id", aprendicesFormacionesControlador.eliminar.bind(aprendicesFormacionesControlador));
+  
+  return aprendicesFormacionesRouter
+}

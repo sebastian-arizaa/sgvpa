@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { formaciones } from "../../modelo/bdMysql/formaciones";
 import { ErrorBaseDatos, ErrorConflicto, ErrorNoEncontrado } from "../../errores/mysql";
+import { FormacionesInterface } from "../../types/modeloInterfaces";
 
 interface FormacionesControladorInterface {
+  formacionesModelo: FormacionesInterface;
   conseguirTodos(req: Request, res: Response): Promise<void>;
   conseguirUno(req: Request, res: Response): Promise<void>;
   crear(req: Request, res: Response): Promise<void>;
@@ -10,11 +11,15 @@ interface FormacionesControladorInterface {
   eliminar(req: Request, res: Response): Promise<void>;
 }
 
-class FormacionesControlador implements FormacionesControladorInterface {
+export class FormacionesControlador implements FormacionesControladorInterface {
+  formacionesModelo: FormacionesInterface;
+  constructor(formacionesModelo: FormacionesInterface) {
+    this.formacionesModelo = formacionesModelo
+  }
   async conseguirTodos(req: Request, res: Response): Promise<void> {
     if (req.sesion?.userTipo) {
       try {
-        const resultado = await formaciones.conseguirTodos();
+        const resultado = await this.formacionesModelo.conseguirTodos();
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -28,7 +33,7 @@ class FormacionesControlador implements FormacionesControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const resultado = await formaciones.conseguirUno(id);
+        const resultado = await this.formacionesModelo.conseguirUno(id);
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -42,7 +47,7 @@ class FormacionesControlador implements FormacionesControladorInterface {
   async crear(req: Request, res: Response): Promise<void> {
     if (req.sesion?.userTipo) {
       try {
-        const resultado = await formaciones.crear(req.body);
+        const resultado = await this.formacionesModelo.crear(req.body);
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -56,7 +61,7 @@ class FormacionesControlador implements FormacionesControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const resultado = await formaciones.actualizar(id, req.body);
+        const resultado = await this.formacionesModelo.actualizar(id, req.body);
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -70,7 +75,7 @@ class FormacionesControlador implements FormacionesControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const resultado = await formaciones.eliminar(id);
+        const resultado = await this.formacionesModelo.eliminar(id);
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -81,5 +86,3 @@ class FormacionesControlador implements FormacionesControladorInterface {
     }
   }
 }
-
-export const formacionesControlador = new FormacionesControlador();

@@ -4,18 +4,20 @@ import path from "node:path"
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import { dotenvConfig } from "./dotenv";
-import { adminRouter } from "./rutas/bd/admins";
-import { aprendicesRouter } from "./rutas/bd/aprendices";
-import { instructoresRouter } from "./rutas/bd/instructores";
-import { formacionesRouter } from "./rutas/bd/formaciones";
+import { crearAdminsRouter } from "./rutas/bd/admins";
+import { crearAprendicesRouter } from "./rutas/bd/aprendices";
+import { crearInstructoresRouter } from "./rutas/bd/instructores";
+import { crearFormacionesRouter } from "./rutas/bd/formaciones";
 import { __dirname } from "./globals";
 import { mega } from "./conexion/megajs";
-import { instructoresAprendicesRouter } from "./rutas/bd/instructores_aprendices";
-import { aprendicesFormacionesRouter } from "./rutas/bd/aprendices_formaciones";
+import { crearInstructoresAprendicesRouter} from "./rutas/bd/instructores_aprendices";
+import { crearAprendicesFormacionesRouter } from "./rutas/bd/aprendices_formaciones";
 import { megajsRouter } from "./rutas/storage/megajs";
 import { JwtPayloadType } from "../types";
 import { sesionRouter } from "./rutas/sesion";
-import { actasRouter } from "./rutas/bd/actas";
+import { crearActasRouter } from "./rutas/bd/actas";
+import { modelos } from "./modelos";
+
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -38,13 +40,15 @@ app.use((req, _res, next) => {
   next()
 })
 
-app.use("/server/admins", adminRouter)
-app.use("/server/instructores", instructoresRouter)
-app.use("/server/aprendices", aprendicesRouter)
-app.use("/server/formaciones", formacionesRouter)
-app.use("/server/instructores-aprendices", instructoresAprendicesRouter)
-app.use("/server/aprendices-formaciones", aprendicesFormacionesRouter)
-app.use("/server/actas", actasRouter)
+const BD_TYPE = dotenvConfig.BD_TYPE
+
+app.use("/server/admins", crearAdminsRouter({adminsModelo: modelos[BD_TYPE].admins}))
+app.use("/server/instructores", crearInstructoresRouter({instructoresModelo: modelos[BD_TYPE].instructores}))
+app.use("/server/aprendices", crearAprendicesRouter({AprendicesModelo: modelos[BD_TYPE].aprendices}))
+app.use("/server/formaciones", crearFormacionesRouter({formacionesModelo: modelos[BD_TYPE].formaciones}))
+app.use("/server/instructores-aprendices", crearInstructoresAprendicesRouter({instructoresAprendicesModelo: modelos[BD_TYPE].instructores_aprendices}))
+app.use("/server/aprendices-formaciones", crearAprendicesFormacionesRouter({aprendicesFormacionesModelo: modelos[BD_TYPE].aprendices_formaciones}))
+app.use("/server/actas", crearActasRouter({actaModelo: modelos[BD_TYPE].actas}))
 app.use("/server/megajs", megajsRouter)
 app.use("/server/sesion", sesionRouter)
 

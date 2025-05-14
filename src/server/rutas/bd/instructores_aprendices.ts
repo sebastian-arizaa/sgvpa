@@ -1,10 +1,15 @@
 import { Router } from "express";
-import { instructoresAprendicesControlador } from "../../../controlador/bd/instructores_aprendices";
+import { InstructoresAprendicesControlador } from "../../../controlador/bd/instructores_aprendices";
+import { InstructoresAprendicesInterface } from "../../../types/modeloInterfaces";
 
-export const instructoresAprendicesRouter = Router();
+export const crearInstructoresAprendicesRouter = ({instructoresAprendicesModelo}: {instructoresAprendicesModelo: InstructoresAprendicesInterface}): Router => {
+  const instructoresAprendicesControlador = new InstructoresAprendicesControlador(instructoresAprendicesModelo)
+  const instructoresAprendicesRouter = Router();
+  instructoresAprendicesRouter.get("/todos", instructoresAprendicesControlador.conseguirTodos.bind(instructoresAprendicesControlador));
+  instructoresAprendicesRouter.get("/uno/:id", instructoresAprendicesControlador.conseguirUno.bind(instructoresAprendicesControlador));
+  instructoresAprendicesRouter.post("/uno", instructoresAprendicesControlador.crear.bind(instructoresAprendicesControlador));
+  instructoresAprendicesRouter.put("/uno/:id", instructoresAprendicesControlador.actualizar.bind(instructoresAprendicesControlador));
+  instructoresAprendicesRouter.delete("/uno/:id", instructoresAprendicesControlador.eliminar.bind(instructoresAprendicesControlador));
 
-instructoresAprendicesRouter.get("/todos", instructoresAprendicesControlador.conseguirTodos);
-instructoresAprendicesRouter.get("/uno/:id", instructoresAprendicesControlador.conseguirUno);
-instructoresAprendicesRouter.post("/uno", instructoresAprendicesControlador.crear);
-instructoresAprendicesRouter.put("/uno/:id", instructoresAprendicesControlador.actualizar);
-instructoresAprendicesRouter.delete("/uno/:id", instructoresAprendicesControlador.eliminar);
+  return instructoresAprendicesRouter
+}
