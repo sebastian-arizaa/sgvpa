@@ -1,10 +1,15 @@
 import { Router } from "express";
-import { formacionesControlador } from "../../../controlador/bd/formaciones";
+import { FormacionesInterface } from "../../../types/modeloInterfaces";
+import { FormacionesControlador } from "../../../controlador/bd/formaciones";
 
-export const formacionesRouter = Router();
+export const crearFormacionesRouter = ({formacionesModelo}: {formacionesModelo: FormacionesInterface}): Router => {
+  const formacionesControlador = new FormacionesControlador(formacionesModelo)
+  const formacionesRouter = Router();
+  formacionesRouter.get("/todos", formacionesControlador.conseguirTodos.bind(formacionesControlador));
+  formacionesRouter.get("/uno/:id", formacionesControlador.conseguirUno.bind(formacionesControlador));
+  formacionesRouter.post("/uno", formacionesControlador.crear.bind(formacionesControlador));
+  formacionesRouter.put("/uno/:id", formacionesControlador.actualizar.bind(formacionesControlador));
+  formacionesRouter.delete("/uno/:id", formacionesControlador.eliminar.bind(formacionesControlador));
 
-formacionesRouter.get("/todos", formacionesControlador.conseguirTodos);
-formacionesRouter.get("/uno/:id", formacionesControlador.conseguirUno);
-formacionesRouter.post("/uno", formacionesControlador.crear);
-formacionesRouter.put("/uno/:id", formacionesControlador.actualizar);
-formacionesRouter.delete("/uno/:id", formacionesControlador.eliminar);
+  return formacionesRouter
+}

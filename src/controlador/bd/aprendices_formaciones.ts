@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { aprendicesFormaciones } from "../../modelo/bdMysql/aprendices_formaciones";
+import { AprendicesFormacionesInterface } from "../../types/modeloInterfaces";
 
 interface AprendicesFormacionesControladorInterface {
+  aprendicesFormacionesModelo: AprendicesFormacionesInterface;
   conseguirTodos(req: Request, res: Response): Promise<void>;
   conseguirUno(req: Request, res: Response): Promise<void>;
   crear(req: Request, res: Response): Promise<void>;
@@ -9,11 +10,15 @@ interface AprendicesFormacionesControladorInterface {
   eliminar(req: Request, res: Response): Promise<void>;
 }
 
-class AprendicesFormacionesControlador implements AprendicesFormacionesControladorInterface {
+export class AprendicesFormacionesControlador implements AprendicesFormacionesControladorInterface {
+  aprendicesFormacionesModelo: AprendicesFormacionesInterface;
+  constructor(aprendicesFormacionesModelo: AprendicesFormacionesInterface) {
+    this.aprendicesFormacionesModelo = aprendicesFormacionesModelo
+  }
   async conseguirTodos(req: Request, res: Response): Promise<void> {
     if (req.sesion?.userTipo) {
       try {
-        const resultado = await aprendicesFormaciones.conseguirTodos();
+        const resultado = await this.aprendicesFormacionesModelo.conseguirTodos();
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -27,7 +32,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const resultado = await aprendicesFormaciones.conseguirUno(Number(id));
+        const resultado = await this.aprendicesFormacionesModelo.conseguirUno(Number(id));
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -40,7 +45,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
   async crear(req: Request, res: Response): Promise<void> {
     if (req.sesion?.userTipo) {
       try {
-        const resultado = await aprendicesFormaciones.crear(req.body);
+        const resultado = await this.aprendicesFormacionesModelo.crear(req.body);
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -54,7 +59,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const resultado = await aprendicesFormaciones.actualizar(Number(id), req.body);
+        const resultado = await this.aprendicesFormacionesModelo.actualizar(Number(id), req.body);
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -68,7 +73,7 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const resultado = await aprendicesFormaciones.eliminar(Number(id));
+        const resultado = await this.aprendicesFormacionesModelo.eliminar(Number(id));
         res.json(resultado);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -79,5 +84,3 @@ class AprendicesFormacionesControlador implements AprendicesFormacionesControlad
     }
   }
 }
-
-export const aprendicesFormacionesControlador = new AprendicesFormacionesControlador();

@@ -2,6 +2,7 @@
 import { createPool } from "mysql2/promise";
 import { dotenvConfig } from "../../dotenv";
 
+console.log("Dotenvconfig: ", dotenvConfig)
 export const pool = createPool({
   host: dotenvConfig.DB_HOST,
   user: dotenvConfig.DB_USER,

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { instructores } from "../../modelo/bdMysql/instructores";
 import { actualizarTokenAcceso, generaTokenAcceso } from "../../utils/jwt";
 import { ErrorBaseDatos, ErrorConflicto, ErrorNoEncontrado } from "../../errores/mysql";
+import { InstructoresInterface } from "../../types/modeloInterfaces";
 
 interface InstructoresControladorInterface {
+  instructoresModelo: InstructoresInterface;
   conseguirTodos(req: Request, res: Response): Promise<void>;
   conseguirUno(req: Request, res: Response): Promise<void>;
   crear(req: Request, res: Response): Promise<void>;
@@ -11,11 +12,16 @@ interface InstructoresControladorInterface {
   eliminar(req: Request, res: Response): Promise<void>;
 }
 
-class InstructoresControlador implements InstructoresControladorInterface {
+export class InstructoresControlador implements InstructoresControladorInterface {
+  instructoresModelo: InstructoresInterface;
+  constructor(instructoresModelo: InstructoresInterface) {
+    this.instructoresModelo = instructoresModelo
+  }
+
   async conseguirTodos(req: Request, res: Response): Promise<void> {
     if (req.sesion?.userTipo === "admin") {
       try {
-        const respuesta = await instructores.conseguirTodos();
+        const respuesta = await this.instructoresModelo.conseguirTodos();
         res.json(respuesta);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -29,7 +35,7 @@ class InstructoresControlador implements InstructoresControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const respuesta = await instructores.conseguirUno(id);
+        const respuesta = await this.instructoresModelo.conseguirUno(id);
         res.json(respuesta)
       } catch (error: any) {
         console.log("Error: ", error)
@@ -43,7 +49,7 @@ class InstructoresControlador implements InstructoresControladorInterface {
   async crear(req: Request, res: Response): Promise<void> {
     if (req.sesion?.userTipo) {
       try {
-        const respuesta = await instructores.crear(req.body);
+        const respuesta = await this.instructoresModelo.crear(req.body);
         res.json(respuesta);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -59,7 +65,7 @@ class InstructoresControlador implements InstructoresControladorInterface {
       try {
         const { id } = req.params;
         console.log(req.body)
-        const respuesta = await instructores.actualizar(id, req.body.data);
+        const respuesta = await this.instructoresModelo.actualizar(id, req.body.data);
         if (req.body.actualizarToken) {
           actualizarTokenAcceso(res, { userTipo: "instructor", userData: req.body.data })
           res.json({ userTipo: "instructor", userData: req.body.data })
@@ -79,7 +85,7 @@ class InstructoresControlador implements InstructoresControladorInterface {
     if (req.sesion?.userTipo) {
       try {
         const { id } = req.params;
-        const respuesta = await instructores.eliminar(id);
+        const respuesta = await this.instructoresModelo.eliminar(id);
         res.json(respuesta);
       } catch (error: any) {
         console.log("Error: ", error)
@@ -92,7 +98,7 @@ class InstructoresControlador implements InstructoresControladorInterface {
   async ingresar(req: Request, res: Response): Promise<void> {
     try {
       const { id, contraseña } = req.body;
-      const respuesta = await instructores.conseguirUno(id);
+      const respuesta = await this.instructoresModelo.conseguirUno(id);
       generaTokenAcceso(res, { userTipo: "instructor", userData: respuesta }, respuesta, contraseña)
     } catch (error: any) {
       console.log("Error: ", error)
@@ -101,5 +107,3 @@ class InstructoresControlador implements InstructoresControladorInterface {
     }
   }
 }
-
-export const instructoresControlador = new InstructoresControlador();

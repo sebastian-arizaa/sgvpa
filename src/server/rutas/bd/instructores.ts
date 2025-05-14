@@ -1,11 +1,16 @@
 import { Router } from "express";
-import { instructoresControlador } from "../../../controlador/bd/instructores";
+import { InstructoresControlador } from "../../../controlador/bd/instructores";
+import { InstructoresInterface } from "../../../types/modeloInterfaces";
 
-export const instructoresRouter = Router();
+export const crearInstructoresRouter = ({instructoresModelo}: {instructoresModelo: InstructoresInterface}): Router => {
+  const instructoresControlador = new InstructoresControlador(instructoresModelo) 
+  const instructoresRouter = Router();
+  instructoresRouter.get("/todos", instructoresControlador.conseguirTodos.bind(instructoresControlador));
+  instructoresRouter.get("/uno/:id", instructoresControlador.conseguirUno.bind(instructoresControlador));
+  instructoresRouter.post("/uno", instructoresControlador.crear.bind(instructoresControlador));
+  instructoresRouter.put("/uno/:id", instructoresControlador.actualizar.bind(instructoresControlador));
+  instructoresRouter.delete("/uno/:id", instructoresControlador.eliminar.bind(instructoresControlador));
+  instructoresRouter.post("/ingresar", instructoresControlador.ingresar.bind(instructoresControlador));
 
-instructoresRouter.get("/todos", instructoresControlador.conseguirTodos);
-instructoresRouter.get("/uno/:id", instructoresControlador.conseguirUno);
-instructoresRouter.post("/uno", instructoresControlador.crear);
-instructoresRouter.put("/uno/:id", instructoresControlador.actualizar);
-instructoresRouter.delete("/uno/:id", instructoresControlador.eliminar);
-instructoresRouter.post("/ingresar", instructoresControlador.ingresar);
+  return instructoresRouter
+}
